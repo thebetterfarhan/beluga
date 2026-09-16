@@ -51,6 +51,7 @@ fun AppsTab(
 	val viewModel = koinViewModel<AppsTabViewModel>()
 	val apps by viewModel.apps.collectAsState()
 	val query by viewModel.searchQuery.collectAsState()
+	val recentlyUpdatedCount = viewModel.recentlyUpdatedCount
 	val startupFocus = LocalStartupFocus
 
 	val firstCardFocusRequester = remember { FocusRequester() }
@@ -74,14 +75,19 @@ fun AppsTab(
 	}
 	val announceAppsTab = stringResource(R.string.announce_apps_tab)
 	val announceSingular = stringResource(R.string.search_result_count_singular)
-	val announcePlural = stringResource(R.string.search_result_count, 0)
+	val announceOneUpdated = stringResource(R.string.announce_one_app_updated)
+	val announceAppsUpdated = stringResource(R.string.announce_apps_updated)
 	var appsAnnouncement by remember { mutableStateOf<String?>(null) }
-	LaunchedEffect(resumeCount, apps, announceAppsTab) {
+	LaunchedEffect(resumeCount, apps, announceAppsTab, recentlyUpdatedCount) {
 		appsAnnouncement = buildString {
 			append(announceAppsTab)
 			if (apps.isNotEmpty()) {
 				val countLabel = if (apps.size == 1) announceSingular else "$apps.size apps"
 				append(" $countLabel.")
+			}
+			if (recentlyUpdatedCount > 0) {
+				val updatedLabel = if (recentlyUpdatedCount == 1) announceOneUpdated else "$recentlyUpdatedCount $announceAppsUpdated"
+				append(" $updatedLabel")
 			}
 		}
 	}

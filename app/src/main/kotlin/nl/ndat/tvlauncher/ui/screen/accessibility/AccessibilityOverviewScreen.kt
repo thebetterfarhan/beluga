@@ -1,5 +1,6 @@
 package nl.ndat.tvlauncher.ui.screen.accessibility
 
+import android.net.Uri
 import android.provider.Settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,7 @@ import androidx.tv.material3.Text
 import nl.ndat.tvlauncher.R
 import nl.ndat.tvlauncher.data.Destinations
 import nl.ndat.tvlauncher.util.AccessibilityPreferences
+import nl.ndat.tvlauncher.util.PendingUpdatesStore
 import nl.ndat.tvlauncher.util.SystemAccessibilityHelper
 import nl.ndat.tvlauncher.util.composition.LocalBackStack
 import nl.ndat.tvlauncher.util.modifier.debugLauncherLog
@@ -76,6 +78,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 		val context = LocalContext.current
 		val a11yPrefs = remember { AccessibilityPreferences(context) }
 		val sysA11yHelper = remember { SystemAccessibilityHelper(context) }
+		val pendingUpdatesStore = remember { PendingUpdatesStore(context) }
 	val audioDescState = if (sysA11yHelper.isAudioDescriptionRequested) audioDescOn else audioDescOff
 	val highContrastState = if (sysA11yHelper.isHighContrastTextEnabled) highContrastOn else highContrastOff
 	var onboardingDismissed by remember { mutableStateOf(a11yPrefs.hasSeenOnboarding()) }
@@ -336,6 +339,41 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					)
 					Text(
 						text = highContrastSummary,
+						style = MaterialTheme.typography.bodyMedium,
+						modifier = Modifier.padding(top = 4.dp),
+					)
+				}
+			}
+		}
+		item {
+			val pendingUpdatesCount = pendingUpdatesStore.getRecentlyUpdatedCount()
+			val pendingUpdatesTitle = stringResource(R.string.pending_updates_title)
+			val pendingUpdatesSummary = if (pendingUpdatesCount > 0) {
+				stringResource(R.string.pending_updates_summary, pendingUpdatesCount)
+			} else {
+				stringResource(R.string.pending_updates_zero)
+			}
+			val cardDesc = "$pendingUpdatesTitle. $pendingUpdatesSummary"
+			Card(
+				onClick = {
+					val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse("https://play.google.com/store/apps/updates"))
+						.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+					context.startActivity(intent)
+				},
+				modifier = Modifier
+					.fillMaxWidth()
+					.onFocusChanged {
+						debugLauncherLog("pending-updates: focused=${it.isFocused} hasFocus=${it.hasFocus}")
+					}
+					.semantics(mergeDescendants = true) {
+						contentDescription = cardDesc
+						role = Role.Button
+					},
+			) {
+				Column(modifier = Modifier.padding(20.dp).clearAndSetSemantics { }) {
+					Text(text = pendingUpdatesTitle, style = MaterialTheme.typography.titleMedium)
+					Text(
+						text = pendingUpdatesSummary,
 						style = MaterialTheme.typography.bodyMedium,
 						modifier = Modifier.padding(top = 4.dp),
 					)

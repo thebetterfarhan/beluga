@@ -25,6 +25,7 @@ import nl.ndat.tvlauncher.util.LastFocusedAppStore
 import nl.ndat.tvlauncher.util.RecentAppsStore
 import nl.ndat.tvlauncher.util.FocusRestorationManager
 import nl.ndat.tvlauncher.util.LauncherStateStore
+import nl.ndat.tvlauncher.util.PendingUpdatesStore
 import nl.ndat.tvlauncher.util.LauncherStateRecorder
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -37,6 +38,7 @@ import timber.log.Timber
 	private val launcherModule = module {
 		single { DefaultLauncherHelper(get()) }
 		single { AccessibilityPreferences(context = get()) }
+		single { PendingUpdatesStore(get()) }
 		single { FocusRestorationManager(preferences = get()) }
 		single { LastFocusedAppStore(context = get()) }
 		single { RecentAppsStore(context = get()) }
@@ -53,7 +55,7 @@ import timber.log.Timber
 	single { ChannelResolver() }
 
 	viewModel { HomeTabViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-	viewModel { AppsTabViewModel(get(), get(), get()) }
+	viewModel { AppsTabViewModel(get(), get(), get(), get()) }
 	viewModel { AccessibilitySettingsViewModel(get()) }
 	viewModel { HiddenAppsViewModel(get(), get()) }
 	viewModel { HomePreferencesViewModel(get()) }

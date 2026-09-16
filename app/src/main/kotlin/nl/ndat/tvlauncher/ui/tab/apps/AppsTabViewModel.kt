@@ -12,18 +12,18 @@ import kotlinx.coroutines.launch
 import nl.ndat.tvlauncher.BuildConfig
 import nl.ndat.tvlauncher.data.repository.AppRepository
 import nl.ndat.tvlauncher.data.sqldelight.App
-
 import nl.ndat.tvlauncher.util.HiddenAppsStore
 import nl.ndat.tvlauncher.util.LauncherStateRecorder
 import nl.ndat.tvlauncher.util.LauncherStateScrollPositions
+import nl.ndat.tvlauncher.util.PendingUpdatesStore
 
 class AppsTabViewModel(
 	private val appRepository: AppRepository,
 	private val launcherStateRecorder: LauncherStateRecorder,
 	private val hiddenAppsStore: HiddenAppsStore,
+	private val pendingUpdatesStore: PendingUpdatesStore,
 ) : ViewModel() {
 	private val allApps = appRepository.getApps()
-		// Hide launcher app from showing
 		.map { apps -> apps.filterNot { app -> app.packageName == BuildConfig.APPLICATION_ID } }
 		.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
@@ -43,6 +43,9 @@ class AppsTabViewModel(
 
 	val searchResultCount: Int
 		get() = apps.value.size
+
+	val recentlyUpdatedCount: Int
+		get() = pendingUpdatesStore.getRecentlyUpdatedCount()
 
 	fun onSearchQueryChange(query: String) {
 		_searchQuery.value = query

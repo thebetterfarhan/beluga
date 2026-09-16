@@ -62,6 +62,11 @@
 	<string name="announce_home_tab">Home tab. Continue, Recent, Favorites, Watch Next.</string>
 	<string name="announce_apps_tab">All apps. Search installed apps.</string>
 	<string name="announce_app_launched">Opened %1$s</string>
+	<string name="announce_apps_updated">apps were recently updated.</string>
+	<string name="announce_one_app_updated">1 app was recently updated.</string>
+	<string name="pending_updates_title">Recently updated apps</string>
+	<string name="pending_updates_summary">%1$d apps were updated recently. Open the Play Store to see details.</string>
+	<string name="pending_updates_zero">No recently updated apps.</string>
 	<string name="home_preferences">Home layout</string>
 	<string name="home_preferences_summary">Choose which rows appear on the Home screen.</string>
 	<string name="home_layout">Home layout</string>
