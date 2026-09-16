@@ -12,10 +12,10 @@ Add high-value navigation aids based on validated user needs. The Continue row a
 - Recent apps row: show up to 4 most-recently opened apps.
 - MRU tracking via `RecentAppsStore` with a cap of 8 entries.
 - Accessible presentation: each row is a single heading with a subtitle, cards are single-focus targets.
+- Accessible search: text filter for the All Apps grid, usable with D-pad and TalkBack.
 
 ## Out of scope
 
-- Accessible search (deferred to future work).
 - Hidden-app management.
 - Startup summary.
 - Changes to Home routing, launcher registration, or package identity.
@@ -33,10 +33,12 @@ Add high-value navigation aids based on validated user needs. The Continue row a
 - [x] All 8 new test classes pass: `RecentAppsStoreTest` (7), `FocusRestorationManagerTest` (4), `LastFocusedAppStoreTest` (4), `LauncherStateStoreTest` (5), `LauncherStateRecorderTest` (5), `AccessibilityPreferencesTest` (4), `DestinationMappingTest` (4), `RefreshStalenessTrackerTest` (3).
 - [x] `assembleDebug` / `lintDebug` / `testDebugUnitTest` green.
 - [x] Physical-remote + TalkBack pass completed (2026-09-16): all checklist items pass including Continue row, Recent row, Favorites heading (fixed), D-pad navigation, popup round-trip.
+- [x] All Apps accessible search: `AppsSearchBar` with `BasicTextField`, search icon, clear button. `contentDescription = "Search apps"`. Filters `displayName` and `packageName` case-insensitively. Empty search state shows "No apps found". D-pad DOWN from search bar routes to first app card via `focusRestorer(firstCardFocusRequester)`.
+- [x] All Apps heading restructured outside grid: `heading()` on a standalone `Column` child instead of a `GridItemSpan` grid item. `Column` has `paneTitle = "All apps"` semantics.
+- [x] Physical TalkBack validation of search bar pending.
 
 ## Open validation
 
-- [ ] Accessible search (Phase 6 backlog item).
 - [ ] Hidden-app management (Phase 6 backlog item).
 - [ ] Startup summary (Phase 6 backlog item).
 
@@ -53,6 +55,7 @@ Add high-value navigation aids based on validated user needs. The Continue row a
 - [x] Row headings announced once by TalkBack.
 - [x] D-pad navigation through all rows without traps.
 - [x] Physical-remote + TalkBack pass completed with all items passing.
+- [ ] Search bar: TalkBack announces "Search apps" on focus; typing filters the grid; clear button works; D-pad DOWN moves to first result; empty state announced.
 
 ## Next concrete action
 
