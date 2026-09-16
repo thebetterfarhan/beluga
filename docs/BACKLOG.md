@@ -14,7 +14,7 @@ This document protects the current milestone. Do not start an item merely becaus
 - [ ] Search designed for D-pad and TalkBack use.
 - [ ] Recently used apps with clear ordering and concise announcements.
 - [ ] Hidden-app management with discoverable recovery.
-- [ ] Startup summary and accessibility profiles.
+
 - [ ] Navigation sounds, only if user research shows they improve orientation without masking TalkBack.
 - [ ] Voice search, custom layouts, and plugin support with an accessibility design review.
 
