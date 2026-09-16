@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import nl.ndat.tvlauncher.data.repository.AppRepository
 import nl.ndat.tvlauncher.data.repository.ChannelRepository
@@ -29,26 +30,25 @@ class ChannelPreferencesViewModel(
 	}
 
 	private fun loadChannels() {
+		// Only collect apps for the app-name map; channels are managed via manual mutations
 		viewModelScope.launch {
 			appRepository.getApps().collect { allApps ->
 				_apps.value = allApps.associateBy { it.packageName }
 			}
 		}
 		viewModelScope.launch {
-			channelRepository.getFavoriteAppChannels().collect { channelList ->
-				val ordered = orderChannels(channelList)
-				_channels.value = ordered
-			}
+			channelRepository.getFavoriteAppChannels()
+				.map { channelList -> orderChannels(channelList) }
+				.collect { _channels.value = it }
 		}
 	}
 
 	private fun orderChannels(channels: List<Channel>): List<Channel> {
-		val stored = storedOrder
-		if (stored.isEmpty()) return channels
+		if (storedOrder.isEmpty()) return channels
 		val channelMap = channels.associateBy { it.id }
 		val ordered = mutableListOf<Channel>()
 		val remaining = channelMap.values.toMutableSet()
-		for (id in stored) {
+		for (id in storedOrder) {
 			channelMap[id]?.let { ordered.add(it); remaining.remove(it) }
 		}
 		ordered.addAll(remaining)

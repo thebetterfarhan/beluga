@@ -34,7 +34,7 @@ fun TvInputInfo.getInputType() = when (this.type) {
 	else -> InputType.OTHER
 }
 
-fun TvInputInfo?.loadBanner(context: Context): Drawable = this?.loadIcon(context) ?: when (this?.type) {
+fun TvInputInfo?.loadBanner(context: Context): Drawable? = this?.loadIcon(context) ?: when (this?.type) {
 	TvInputInfo.TYPE_TUNER -> R.drawable.banner_input // FIXME: Add banner
 	TvInputInfo.TYPE_OTHER -> R.drawable.banner_input // FIXME: Add banner
 	TvInputInfo.TYPE_COMPOSITE -> R.drawable.banner_composite
@@ -46,7 +46,7 @@ fun TvInputInfo?.loadBanner(context: Context): Drawable = this?.loadIcon(context
 	TvInputInfo.TYPE_HDMI -> R.drawable.banner_hdmi
 	TvInputInfo.TYPE_DISPLAY_PORT -> R.drawable.banner_input // FIXME: Add banner
 	else -> R.drawable.banner_input
-}.let { ContextCompat.getDrawable(context, it) as Drawable }
+}.let { ContextCompat.getDrawable(context, it) }
 
 fun TvInputInfo.createSwitchIntent(): Intent = Intent(
 	Intent.ACTION_VIEW,

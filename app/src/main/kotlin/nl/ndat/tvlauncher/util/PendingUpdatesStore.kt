@@ -13,15 +13,22 @@ class PendingUpdatesStore(private val context: Context) {
 
 	private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
+	@Volatile
+	private var cachedCount: Int? = null
+
 	fun recordUpdated(packageName: String, versionCode: Long) {
 		val now = System.currentTimeMillis()
 		val entry = "$packageName:$versionCode:$now"
 		val existing = prefs.getStringSet(KEY_RECENTLY_UPDATED, emptySet())?.toMutableSet() ?: mutableSetOf()
 		existing.add(entry)
 		prefs.edit().putStringSet(KEY_RECENTLY_UPDATED, existing).apply()
+		cachedCount = null // invalidate cache on write
 	}
 
 	fun getRecentlyUpdatedCount(): Int {
+		// Return cached count if valid
+		cachedCount?.let { return it }
+
 		val now = System.currentTimeMillis()
 		val entries = prefs.getStringSet(KEY_RECENTLY_UPDATED, emptySet())?.toMutableSet() ?: mutableSetOf()
 		val iterator = entries.iterator()
@@ -34,7 +41,9 @@ class PendingUpdatesStore(private val context: Context) {
 			}
 		}
 		prefs.edit().putStringSet(KEY_RECENTLY_UPDATED, entries).apply()
-		return entries.size
+		val result = entries.size
+		cachedCount = result
+		return result
 	}
 
 	fun getRecentlyUpdatedPackages(): Set<String> {

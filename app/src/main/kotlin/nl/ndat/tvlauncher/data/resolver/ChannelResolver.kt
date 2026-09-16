@@ -56,36 +56,36 @@ class ChannelResolver {
 		val cursor = context.contentResolver.tryQuery(
 			TvContractCompat.Channels.CONTENT_URI,
 			PreviewChannel.Columns.PROJECTION,
- 		)?.takeIf { it.count > 0 } ?: return@withContext emptyList()
+		)?.takeIf { it.count > 0 } ?: return@withContext emptyList()
 
-		buildList {
-			if (!cursor.moveToFirst()) {
+		cursor.use {
+			if (!it.moveToFirst()) {
 				Timber.w("Unable to move cursor")
-				return@buildList
+				return@withContext emptyList()
 			}
 
-			do {
-				try {
-					if (cursor.getString(PreviewChannel.Columns.COL_APP_LINK_INTENT_URI).isNullOrEmpty()) {
-						Timber.d("Ignoring channel ${cursor.getString(PreviewChannel.Columns.COL_PACKAGE_NAME)} due to missing intent uri")
-					} else if (cursor.getString(PreviewChannel.Columns.COL_DISPLAY_NAME).isNullOrEmpty()) {
-						Timber.d("Ignoring channel ${cursor.getString(PreviewChannel.Columns.COL_PACKAGE_NAME)} due to missing display name")
-					} else {
-						val channel = PreviewChannel.fromCursor(cursor)?.toChannel()
-						if (channel == null) {
-							Timber.d("Ignoring channel ${cursor.getString(PreviewChannel.Columns.COL_PACKAGE_NAME)} due to failing to parse")
+			buildList {
+				do {
+					try {
+						if (it.getString(PreviewChannel.Columns.COL_APP_LINK_INTENT_URI).isNullOrEmpty()) {
+							Timber.d("Ignoring channel ${it.getString(PreviewChannel.Columns.COL_PACKAGE_NAME)} due to missing intent uri")
+						} else if (it.getString(PreviewChannel.Columns.COL_DISPLAY_NAME).isNullOrEmpty()) {
+							Timber.d("Ignoring channel ${it.getString(PreviewChannel.Columns.COL_PACKAGE_NAME)} due to missing display name")
 						} else {
-							add(channel)
+							val channel = PreviewChannel.fromCursor(it)?.toChannel()
+							if (channel == null) {
+								Timber.d("Ignoring channel ${it.getString(PreviewChannel.Columns.COL_PACKAGE_NAME)} due to failing to parse")
+							} else {
+								add(channel)
+							}
 						}
+					} catch (err: NullPointerException) {
+						Timber.e(err, "Unable to parse channel")
+					} catch (err: CursorIndexOutOfBoundsException) {
+						Timber.e(err, "Unable to parse channel")
 					}
-				} catch (err: NullPointerException) {
-					Timber.e(err, "Unable to parse channel")
-				} catch (err: CursorIndexOutOfBoundsException) {
-					Timber.e(err, "Unable to parse channel")
-				}
-			} while (cursor.moveToNext())
-
-			cursor.close()
+				} while (it.moveToNext())
+			}
 		}
 	}
 
@@ -96,23 +96,23 @@ class ChannelResolver {
 				PreviewProgram.PROJECTION,
 			)?.takeIf { it.count > 0 } ?: return@withContext emptyList()
 
-			buildList {
-				if (!cursor.moveToFirst()) {
+			cursor.use {
+				if (!it.moveToFirst()) {
 					Timber.w("Unable to move cursor")
-					return@buildList
+					return@withContext emptyList()
 				}
 
-				do {
-					try {
-						add(PreviewProgram.fromCursor(cursor).toChannelProgram())
-					} catch (err: NullPointerException) {
-						Timber.e(err, "Unable to parse channel program")
-					} catch (err: CursorIndexOutOfBoundsException) {
-						Timber.e(err, "Unable to parse channel program")
-					}
-				} while (cursor.moveToNext())
-
-				cursor.close()
+				buildList {
+					do {
+						try {
+							add(PreviewProgram.fromCursor(it).toChannelProgram())
+						} catch (err: NullPointerException) {
+							Timber.e(err, "Unable to parse channel program")
+						} catch (err: CursorIndexOutOfBoundsException) {
+							Timber.e(err, "Unable to parse channel program")
+						}
+					} while (it.moveToNext())
+				}
 			}
 		}
 
@@ -122,23 +122,23 @@ class ChannelResolver {
 			WatchNextProgram.PROJECTION,
 		)?.takeIf { it.count > 0 } ?: return@withContext emptyList()
 
-		buildList {
-			if (!cursor.moveToFirst()) {
+		cursor.use {
+			if (!it.moveToFirst()) {
 				Timber.w("Unable to move cursor")
-				return@buildList
+				return@withContext emptyList()
 			}
 
-			do {
-				try {
-					add(WatchNextProgram.fromCursor(cursor).toChannelProgram())
-				} catch (err: NullPointerException) {
-					Timber.e(err, "Unable to parse channel program")
-				} catch (err: CursorIndexOutOfBoundsException) {
-					Timber.e(err, "Unable to parse channel program")
-				}
-			} while (cursor.moveToNext())
-
-			cursor.close()
+			buildList {
+				do {
+					try {
+						add(WatchNextProgram.fromCursor(it).toChannelProgram())
+					} catch (err: NullPointerException) {
+						Timber.e(err, "Unable to parse channel program")
+					} catch (err: CursorIndexOutOfBoundsException) {
+						Timber.e(err, "Unable to parse channel program")
+					}
+				} while (it.moveToNext())
+			}
 		}
 	}
 

@@ -3,7 +3,6 @@ package nl.ndat.tvlauncher.data.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -13,6 +12,7 @@ import nl.ndat.tvlauncher.data.repository.AppRepository
 import nl.ndat.tvlauncher.util.PendingUpdatesStore
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import timber.log.Timber
 
 class PackageChangeReceiver : BroadcastReceiver(), KoinComponent {
 	companion object {
@@ -29,14 +29,12 @@ class PackageChangeReceiver : BroadcastReceiver(), KoinComponent {
 
 	override fun onReceive(context: Context, intent: Intent) {
 		val pendingIntent = goAsync()
-
 		val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 		scope.launch {
 			try {
-				val packageName = when {
-					intent.action in packageActions && intent.data?.scheme == "package" -> intent.data?.schemeSpecificPart
-					else -> null
-				}
+				val packageName: String? = if (intent.action in packageActions && intent.data?.scheme == "package") {
+					intent.data?.schemeSpecificPart
+				} else null
 
 				if (packageName != null) {
 					appRepository.refreshApplication(packageName)
@@ -50,7 +48,7 @@ class PackageChangeReceiver : BroadcastReceiver(), KoinComponent {
 					appRepository.refreshAllApplications()
 				}
 			} catch (err: Throwable) {
-				// Silently swallow receiver errors; the next resume or broadcast will retry.
+				Timber.e(err, "PackageChangeReceiver failed: action=${intent.action}")
 			} finally {
 				pendingIntent.finish()
 				scope.cancel()

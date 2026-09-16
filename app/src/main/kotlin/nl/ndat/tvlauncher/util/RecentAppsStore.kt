@@ -11,14 +11,22 @@ import androidx.compose.runtime.Immutable
  * Backed by a single shared-preferences string slot. The list is ordered
  * most-recent-first; adding an existing entry moves it to the head and
  * preserves distinctness.
+ *
+ * Caches the parsed list in memory to avoid repeated SharedPreferences reads.
  */
 @Immutable
 class RecentAppsStore(private val store: PreferenceStore) {
 	constructor(context: Context) : this(SharedPreferenceStore(context, "recent_apps"))
 
+	@Volatile
+	private var cached: List<String>? = null
+
 	fun get(): List<String> {
-		val raw = store.getString("recent_app_ids", null) ?: return emptyList()
-		return raw.split(MRU_DELIMITER).filter(String::isNotEmpty)
+		cached?.let { return it }
+		val raw = store.getString("recent_app_ids", null) ?: return emptyList<String>().also { cached = it }
+		val parsed = raw.split(MRU_DELIMITER).filter(String::isNotEmpty)
+		cached = parsed
+		return parsed
 	}
 
 	fun add(appId: String) {
@@ -28,10 +36,12 @@ class RecentAppsStore(private val store: PreferenceStore) {
 		existing.add(0, appId)
 		val trimmed = if (existing.size > MRU_CAP) existing.take(MRU_CAP) else existing
 		store.setString("recent_app_ids", trimmed.joinToString(MRU_DELIMITER))
+		cached = trimmed
 	}
 
 	fun clear() {
 		store.remove("recent_app_ids")
+		cached = emptyList()
 	}
 
 	companion object {

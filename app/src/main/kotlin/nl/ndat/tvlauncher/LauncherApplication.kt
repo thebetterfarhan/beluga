@@ -16,17 +16,17 @@ import nl.ndat.tvlauncher.ui.screen.accessibility.ChannelPreferencesViewModel
 import nl.ndat.tvlauncher.ui.screen.accessibility.HiddenAppsViewModel
 import nl.ndat.tvlauncher.ui.screen.accessibility.HomePreferencesViewModel
 import nl.ndat.tvlauncher.ui.screen.launcher.LauncherScreenViewModel
-import nl.ndat.tvlauncher.util.DefaultLauncherHelper
 import nl.ndat.tvlauncher.util.AccessibilityPreferences
+import nl.ndat.tvlauncher.util.ChannelPreferences
+import nl.ndat.tvlauncher.util.DefaultLauncherHelper
+import nl.ndat.tvlauncher.util.FocusRestorationManager
 import nl.ndat.tvlauncher.util.HiddenAppsStore
 import nl.ndat.tvlauncher.util.HomePreferences
-import nl.ndat.tvlauncher.util.ChannelPreferences
 import nl.ndat.tvlauncher.util.LastFocusedAppStore
-import nl.ndat.tvlauncher.util.RecentAppsStore
-import nl.ndat.tvlauncher.util.FocusRestorationManager
+import nl.ndat.tvlauncher.util.LauncherStateRecorder
 import nl.ndat.tvlauncher.util.LauncherStateStore
 import nl.ndat.tvlauncher.util.PendingUpdatesStore
-import nl.ndat.tvlauncher.util.LauncherStateRecorder
+import nl.ndat.tvlauncher.util.RecentAppsStore
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -48,20 +48,20 @@ import timber.log.Timber
 		single { LauncherStateStore(context = get()) }
 		single { LauncherStateRecorder(store = get()) }
 
-	single { AppRepository(get(), get(), get()) }
-	single { AppResolver() }
+		single { AppRepository(get(), get(), get()) }
+		single { AppResolver() }
 
-	single { ChannelRepository(get(), get(), get()) }
-	single { ChannelResolver() }
+		single { ChannelRepository(get(), get(), get()) }
+		single { ChannelResolver() }
 
-	viewModel { HomeTabViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-	viewModel { AppsTabViewModel(get(), get(), get(), get()) }
-	viewModel { AccessibilitySettingsViewModel(get()) }
-	viewModel { HiddenAppsViewModel(get(), get()) }
-	viewModel { HomePreferencesViewModel(get()) }
-	viewModel { ChannelPreferencesViewModel(get(), get(), get()) }
-	viewModel { LauncherScreenViewModel(get(), get()) }
-}
+		viewModel { HomeTabViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+		viewModel { AppsTabViewModel(get(), get(), get(), get()) }
+		viewModel { AccessibilitySettingsViewModel(get()) }
+		viewModel { HiddenAppsViewModel(get(), get()) }
+		viewModel { HomePreferencesViewModel(get()) }
+		viewModel { ChannelPreferencesViewModel(get(), get(), get()) }
+		viewModel { LauncherScreenViewModel(get(), get()) }
+	}
 
 private val databaseModule = module {
 	// Create database(s)
@@ -72,7 +72,7 @@ class LauncherApplication : Application(), ImageLoaderFactory {
 	override fun onCreate() {
 		super.onCreate()
 
-		Timber.plant(Timber.DebugTree())
+		if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
 
 		startKoin {
 			androidLogger(level = if (BuildConfig.DEBUG) Level.DEBUG else Level.INFO)
@@ -83,6 +83,7 @@ class LauncherApplication : Application(), ImageLoaderFactory {
 	}
 
 	override fun newImageLoader() = ImageLoader.Builder(this)
-		.logger(DebugLogger())
+		.crossfade(true)
+		.logger(if (BuildConfig.DEBUG) DebugLogger() else null)
 		.build()
 }

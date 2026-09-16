@@ -2,25 +2,30 @@ package nl.ndat.tvlauncher.ui.tab.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import nl.ndat.tvlauncher.data.repository.AppRepository
 import nl.ndat.tvlauncher.data.repository.ChannelRepository
 import nl.ndat.tvlauncher.data.sqldelight.App
 import nl.ndat.tvlauncher.data.sqldelight.Channel
+import nl.ndat.tvlauncher.util.ChannelPreferences
+import nl.ndat.tvlauncher.util.FocusRestorationManager
+import nl.ndat.tvlauncher.util.HomePreferences
 import nl.ndat.tvlauncher.util.LastFocusedAppStore
 import nl.ndat.tvlauncher.util.LauncherStateRecorder
 import nl.ndat.tvlauncher.util.LauncherStateScrollPositions
-import nl.ndat.tvlauncher.util.FocusRestorationManager
 import nl.ndat.tvlauncher.util.RecentAppsStore
-import nl.ndat.tvlauncher.util.HomePreferences
-import nl.ndat.tvlauncher.util.ChannelPreferences
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class HomeTabViewModel(
 	private val appRepository: AppRepository,
 	private val channelRepository: ChannelRepository,
@@ -67,7 +72,18 @@ class HomeTabViewModel(
 	val watchNextPrograms = channelRepository.getWatchNextPrograms()
 		.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-	fun channelPrograms(channel: Channel) = channelRepository.getProgramsByChannel(channel)
+	// Pre-computed map of channelId -> programs. Replacing per-row flow collections
+	// in the LazyColumn with a single combined map eliminates N SQLDelight subscriptions
+	// and N recomposition triggers when the database emits.
+	val channelProgramsMap: kotlinx.coroutines.flow.StateFlow<Map<String, List<nl.ndat.tvlauncher.data.sqldelight.ChannelProgram>>> =
+		channels.flatMapLatest { channelList ->
+			if (channelList.isEmpty()) flowOf(emptyMap())
+			else combine(
+				channelList.map { channel ->
+					channelRepository.getProgramsByChannel(channel).map { programs -> channel.id to programs }
+				}
+			) { channelProgramsArray -> channelProgramsArray.toMap() }
+		}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
 
 	fun favoriteApp(app: App, favorite: Boolean) = viewModelScope.launch {
 		if ((app.favoriteOrder != null) == favorite) return@launch

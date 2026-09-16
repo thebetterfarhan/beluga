@@ -97,7 +97,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 		verticalArrangement = Arrangement.spacedBy(12.dp),
 	) {
 		if (!onboardingDismissed) {
-			item {
+			item(key = "onboarding") {
 				OnboardingCard(
 					title = onboardingTitle,
 					body = onboardingBody,
@@ -109,14 +109,14 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 				)
 			}
 		}
-		item {
+		item(key = "title") {
 			Text(
 				text = title,
 				style = MaterialTheme.typography.headlineMedium,
 				modifier = Modifier.padding(top = 12.dp).semantics { heading() },
 			)
 		}
-		item {
+		item(key = "focus_restore") {
 			val cardDesc = "$settingName. $focusRestoreCurrentValue. $summary"
 			Card(
 				onClick = { backStack.add(Destinations.FocusRestoration) },
@@ -140,7 +140,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 				}
 			}
 		}
-		item {
+		item(key = "orientation_help") {
 			val cardDesc = "$orientationHelp. $orientationHelpSummary"
 			Card(
 				onClick = { backStack.add(Destinations.OrientationHelp) },
@@ -164,7 +164,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 				}
 			}
 		}
-		item {
+		item(key = "hidden_apps") {
 			val cardDesc = "$hiddenApps. $hiddenAppsSummary"
 			Card(
 				onClick = { backStack.add(Destinations.HiddenApps) },
@@ -188,7 +188,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 				}
 			}
 		}
-		item {
+		item(key = "home_layout") {
 			val cardDesc = "$homeLayout. $homeLayoutSummary"
 			Card(
 				onClick = { backStack.add(Destinations.HomePreferences) },
@@ -212,7 +212,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 				}
 			}
 		}
-		item {
+		item(key = "app_language") {
 			val cardDesc = "$appLanguage. $appLanguageSummary"
 			Card(
 				onClick = { backStack.add(Destinations.AppLanguage) },
@@ -236,7 +236,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 				}
 			}
 		}
-		item {
+		item(key = "channel_prefs") {
 			val cardDesc = "$channelPrefs. $channelPrefsSummary"
 			Card(
 				onClick = { backStack.add(Destinations.ChannelPreferences) },
@@ -260,7 +260,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 				}
 			}
 		}
-		item {
+		item(key = "system_a11y") {
 			val cardDesc = "$systemA11y. $systemA11ySummary"
 			Card(
 				onClick = {
@@ -287,7 +287,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 				}
 			}
 		}
-		item {
+		item(key = "audio_desc") {
 			val cardDesc = "$audioDesc. $audioDescState. $audioDescSummary"
 			Card(
 				onClick = { },
@@ -316,7 +316,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 				}
 			}
 		}
-		item {
+		item(key = "high_contrast") {
 			val cardDesc = "$highContrast. $highContrastState. $highContrastSummary"
 			Card(
 				onClick = { },
@@ -345,7 +345,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 				}
 			}
 		}
-		item {
+		item(key = "pending_updates") {
 			val pendingUpdatesCount = pendingUpdatesStore.getRecentlyUpdatedCount()
 			val pendingUpdatesTitle = stringResource(R.string.pending_updates_title)
 			val pendingUpdatesSummary = if (pendingUpdatesCount > 0) {

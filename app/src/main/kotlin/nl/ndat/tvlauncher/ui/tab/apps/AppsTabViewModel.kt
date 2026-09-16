@@ -25,7 +25,7 @@ class AppsTabViewModel(
 ) : ViewModel() {
 	private val allApps = appRepository.getApps()
 		.map { apps -> apps.filterNot { app -> app.packageName == BuildConfig.APPLICATION_ID } }
-		.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+		.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
 	private val hiddenIds = MutableStateFlow(hiddenAppsStore.get())
 
@@ -39,7 +39,7 @@ class AppsTabViewModel(
 			app.displayName.contains(query, ignoreCase = true) ||
 				app.packageName.contains(query, ignoreCase = true)
 		}
-	}.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+	}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
 	val searchResultCount: Int
 		get() = apps.value.size

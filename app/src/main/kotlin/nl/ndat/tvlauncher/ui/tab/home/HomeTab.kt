@@ -52,6 +52,7 @@ fun HomeTab(
 	val showContinue by viewModel.showContinue.collectAsState()
 	val showRecent by viewModel.showRecent.collectAsState()
 	val showWatchNext by viewModel.showWatchNext.collectAsState()
+	val channelProgramsMap by viewModel.channelProgramsMap.collectAsState()
 	val listState = rememberLazyListState(viewModel.homeScrollIndex())
 
 	LaunchedEffect(listState.firstVisibleItemIndex) {
@@ -155,7 +156,7 @@ fun HomeTab(
 				val app = remember(channel.packageName, allApps) {
 					allApps.firstOrNull { app -> app.packageName == channel.packageName }
 				}
-				val programs by viewModel.channelPrograms(channel).collectAsState(initial = emptyList())
+				val programs = channelProgramsMap[channel.id] ?: emptyList()
 
 				if (app != null) {
 					val title = stringResource(R.string.channel_preview, app.displayName, channel.displayName)
