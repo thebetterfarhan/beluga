@@ -1,6 +1,6 @@
 # Current Milestone: Channel editing, performance, and home remap
 
-**Status:** In progress
+**Status:** Complete
 
 ## Objective
 
@@ -122,3 +122,16 @@ Advance Phase 5 → Phase 6 in ROADMAP and begin planning accessible search or o
 - Completed: TalkBack announcement on launcher resume via `DisposableEffect` + `LaunchedEffect` + `resumeCount` counter. Home tab: dynamic section list. All Apps: app count. Accessibility audit fixing 14 issues across 10 files: `Role.Button` on `AppCard` and `ChannelProgramCard`; `heading()` on `FocusRestorationScreen` and `OrientationHelpScreen` titles; `focusRestorer()` on `OrientationHelpScreen`, both `AppPopup` rows, `PopupContainer` Box, and `AppsTab` LazyVerticalGrid; `ToolbarClock` contentDescription; `CardRow` subtitle merged into heading `contentDescription`.
 - Evidence/checks: `assembleDebug` / unit tests green, installed on device.
 - Next concrete action: Phase 6 is complete — all backlog items done. Review ROADMAP for next milestone.
+
+## Update - 2026-09-16 (Full codebase audit — bug fixes and performance)
+
+- Completed: 15-issue audit pass covering race conditions, cursor leaks, silent exception swallowing, N+1 channel subscriptions, unsafe type casts, redundant logging, and UI anti-patterns.
+- Bug fixes applied: cursor `.use {}` in `ChannelResolver` (all 3 methods); `PackageChangeReceiver` exceptions logged with `Timber.e()`; `HiddenAppsViewModel` and `ChannelPreferencesViewModel` races fixed via pure derived flows; `WhileSubscribed(5000)` in `AppsTabViewModel`; nullable `Drawable?` return in `TvInputExtensions`; `@Volatile` caches in 6 SharedPreferences stores; explicit `key` on all 11 `LazyColumn.item {}` in `AccessibilityOverviewScreen`; debug logging gated behind `BuildConfig.DEBUG`; Coil crossfade enabled.
+- Build clean (only pre-existing deprecation warnings for `LocalLifecycleOwner`); installed on device.
+- Next concrete action: documentation pass — update README, create CHANGELOG.md, update ROADMAP.
+
+## Update - 2026-09-16 (Documentation — README rewritten, CHANGELOG created)
+
+- Completed: README rewritten with fun tone, Jaws/Orca/Beluga tagline, full feature breakdown, platform limitations, and build instructions. CHANGELOG.md created with all features, bug fixes, performance improvements, and accessibility work organized by category.
+- Evidence/checks: pushed to `fix/talkback-navigation` branch on GitHub.
+- Status: All phases Complete; milestone is done.
