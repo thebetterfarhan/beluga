@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,8 +55,7 @@ fun FocusRestorationScreen(modifier: Modifier = Modifier) {
 			.focusRestorer()
 			.semantics {
 				paneTitle = title
-			}
-			.selectableGroup(),
+			},
 		verticalArrangement = Arrangement.spacedBy(12.dp),
 	) {
 		item {

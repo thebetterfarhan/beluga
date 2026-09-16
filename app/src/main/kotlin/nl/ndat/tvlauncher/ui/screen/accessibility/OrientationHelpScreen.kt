@@ -40,6 +40,12 @@ fun OrientationHelpScreen(modifier: Modifier = Modifier) {
 			)
 		}
 		item {
+			Text(
+				text = stringResource(R.string.orientation_help_summary),
+				style = MaterialTheme.typography.bodyMedium,
+			)
+		}
+		item {
 			OrientationHelpSection(
 				headingRes = R.string.orientation_help_remote_heading,
 				bodyRes = R.string.orientation_help_remote_body,

@@ -17,7 +17,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -30,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.tv.material3.Card
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
@@ -48,7 +47,6 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 	val viewModel = koinViewModel<AccessibilitySettingsViewModel>()
 	val backStack = LocalBackStack.current
 	val focusRequester = remember { FocusRequester() }
-	val initialFocusPending = remember { mutableStateOf(true) }
 	val title = stringResource(R.string.accessibility)
 	val settingName = stringResource(R.string.focus_restoration)
 	val currentValue = stringResource(viewModel.focusRestoreMode.nameRes())
@@ -101,14 +99,6 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 				onClick = { backStack.add(Destinations.FocusRestoration) },
 				modifier = Modifier
 					.fillMaxWidth()
-					.focusRequester(focusRequester)
-					.onPlaced {
-						if (initialFocusPending.value) {
-							val accepted = focusRequester.requestFocus()
-							debugLauncherLog("settings-overview entry focus accepted=$accepted")
-							if (accepted) initialFocusPending.value = false
-						}
-					}
 					.onFocusChanged {
 						debugLauncherLog("settings-overview: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}

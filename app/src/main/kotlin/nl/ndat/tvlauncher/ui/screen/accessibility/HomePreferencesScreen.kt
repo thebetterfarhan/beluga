@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,7 +20,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -128,23 +128,22 @@ private fun RowToggle(
 	focusRequester: FocusRequester,
 ) {
 	val requester = remember { FocusRequester() }
-	val pending = remember { mutableStateOf(initialFocusPending) }
 	val onLabel = stringResource(R.string.enabled)
 	val offLabel = stringResource(R.string.disabled)
 	val state = if (checked) onLabel else offLabel
+
+	// Exactly-once focus request on first composition.
+	LaunchedEffect(initialFocusPending) {
+		if (initialFocusPending) {
+			requester.requestFocus()
+		}
+	}
 
 	Card(
 		onClick = { onCheckedChange(!checked) },
 		modifier = Modifier
 			.fillMaxWidth()
 			.focusRequester(requester)
-			.onPlaced {
-				if (pending.value) {
-					val accepted = requester.requestFocus()
-					debugLauncherLog("home-prefs: focus accepted=$accepted")
-					if (accepted) pending.value = false
-				}
-			}
 			.onFocusChanged {
 				debugLauncherLog("home-prefs: focused=${it.isFocused}")
 			}
