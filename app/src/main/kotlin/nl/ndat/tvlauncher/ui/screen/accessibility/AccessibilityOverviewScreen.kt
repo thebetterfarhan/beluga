@@ -1,6 +1,5 @@
 package nl.ndat.tvlauncher.ui.screen.accessibility
 
-import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,7 +23,6 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.paneTitle
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Card
 import androidx.tv.material3.MaterialTheme
@@ -44,9 +42,10 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 	val backStack = LocalBackStack.current
 	val focusRequester = remember { FocusRequester() }
 	val title = stringResource(R.string.accessibility)
-	val settingName = stringResource(R.string.focus_restoration)
+		val settingName = stringResource(R.string.focus_restoration)
 	val currentValue = stringResource(viewModel.focusRestoreMode.nameRes())
 	val summary = stringResource(R.string.focus_restore_summary)
+	val focusRestoreCurrentValue = stringResource(R.string.focus_restore_current, currentValue)
 	val orientationHelp = stringResource(R.string.orientation_help)
 	val orientationHelpSummary = stringResource(R.string.orientation_help_summary)
 	val hiddenApps = stringResource(R.string.hidden_apps)
@@ -77,6 +76,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 			)
 		}
 		item {
+			val cardDesc = "$settingName. $focusRestoreCurrentValue. $summary"
 			Card(
 				onClick = { backStack.add(Destinations.FocusRestoration) },
 				modifier = Modifier
@@ -84,15 +84,15 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					.onFocusChanged {
 						debugLauncherLog("settings-overview: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
-					.semantics(mergeDescendants = true) {
-						contentDescription = "$settingName. $currentValue. $summary"
+					.clearAndSetSemantics {
+						contentDescription = cardDesc
 						role = Role.Button
 					},
 			) {
 				Column(modifier = Modifier.padding(20.dp)) {
 					Text(text = settingName, style = MaterialTheme.typography.titleMedium)
 					Text(
-						text = stringResource(R.string.focus_restore_current, currentValue),
+						text = focusRestoreCurrentValue,
 						style = MaterialTheme.typography.bodyMedium,
 						modifier = Modifier.padding(top = 4.dp),
 					)
@@ -100,6 +100,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 			}
 		}
 		item {
+			val cardDesc = "$orientationHelp. $orientationHelpSummary"
 			Card(
 				onClick = { backStack.add(Destinations.OrientationHelp) },
 				modifier = Modifier
@@ -107,8 +108,8 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					.onFocusChanged {
 						debugLauncherLog("orientation-help: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
-					.semantics(mergeDescendants = true) {
-						contentDescription = "$orientationHelp. $orientationHelpSummary"
+					.clearAndSetSemantics {
+						contentDescription = cardDesc
 						role = Role.Button
 					},
 			) {
@@ -123,6 +124,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 			}
 		}
 		item {
+			val cardDesc = "$hiddenApps. $hiddenAppsSummary"
 			Card(
 				onClick = { backStack.add(Destinations.HiddenApps) },
 				modifier = Modifier
@@ -130,8 +132,8 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					.onFocusChanged {
 						debugLauncherLog("hidden-apps: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
-					.semantics(mergeDescendants = true) {
-						contentDescription = "$hiddenApps. $hiddenAppsSummary"
+					.clearAndSetSemantics {
+						contentDescription = cardDesc
 						role = Role.Button
 					},
 			) {
@@ -146,6 +148,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 			}
 		}
 		item {
+			val cardDesc = "$homeLayout. $homeLayoutSummary"
 			Card(
 				onClick = { backStack.add(Destinations.HomePreferences) },
 				modifier = Modifier
@@ -153,8 +156,8 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					.onFocusChanged {
 						debugLauncherLog("home-layout: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
-					.semantics(mergeDescendants = true) {
-						contentDescription = "$homeLayout. $homeLayoutSummary"
+					.clearAndSetSemantics {
+						contentDescription = cardDesc
 						role = Role.Button
 					},
 			) {
@@ -169,6 +172,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 			}
 		}
 		item {
+			val cardDesc = "$appLanguage. $appLanguageSummary"
 			Card(
 				onClick = { backStack.add(Destinations.AppLanguage) },
 				modifier = Modifier
@@ -176,8 +180,8 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					.onFocusChanged {
 						debugLauncherLog("app-language: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
-					.semantics(mergeDescendants = true) {
-						contentDescription = "$appLanguage. $appLanguageSummary"
+					.clearAndSetSemantics {
+						contentDescription = cardDesc
 						role = Role.Button
 					},
 			) {
@@ -214,7 +218,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					debugLauncherLog("default-launcher: isDefault=$isDefaultLauncher talkBack=$talkBackEnabled")
 					val intent = defaultLauncherHelper.requestDefaultLauncherIntent()
 					if (intent != null) {
-						context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+						context.startActivity(intent)
 					}
 				},
 				modifier = Modifier
@@ -243,6 +247,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 			}
 		}
 		item {
+			val cardDesc = "$channelPrefs. $channelPrefsSummary"
 			Card(
 				onClick = { backStack.add(Destinations.ChannelPreferences) },
 				modifier = Modifier
@@ -250,8 +255,8 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					.onFocusChanged {
 						debugLauncherLog("channel-prefs: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
-					.semantics(mergeDescendants = true) {
-						contentDescription = "$channelPrefs. $channelPrefsSummary"
+					.clearAndSetSemantics {
+						contentDescription = cardDesc
 						role = Role.Button
 					},
 			) {
