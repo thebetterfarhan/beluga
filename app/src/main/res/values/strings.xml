@@ -1,4 +1,5 @@
 <resources>
+	<string name="accessibility_service_description">Maps the Home button to open Balooga instead of the default launcher.</string>
 	<string name="app_name">Balooga</string>
 	<string name="settings">Settings</string>
 	<string name="accessibility">Accessibility</string>
@@ -81,4 +82,9 @@
 	<string name="channel_preferences">Channel order</string>
 	<string name="channel_preferences_summary">Drag channels to reorder them on the Home screen.</string>
 	<string name="no_channels">No channels available</string>
+	<string name="home_remap">Home button remap</string>
+	<string name="home_remap_enabled">On</string>
+	<string name="home_remap_disabled">Off</string>
+	<string name="home_remap_summary_enabled">Home button opens Balooga.</string>
+	<string name="home_remap_summary_disabled">Enable to make the Home button open Balooga instead of Google TV Launcher.</string>
 </resources>

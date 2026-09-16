@@ -17,5 +17,15 @@ object AccessibilityServicesHelper {
 				name.contains("TalkBack", ignoreCase = true)
 		}
 	}
+
+	fun isHomeRemapEnabled(context: Context): Boolean {
+		val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+		val enabledServices = am.getEnabledAccessibilityServiceList(
+			android.accessibilityservice.AccessibilityServiceInfo.FEEDBACK_ALL_MASK
+		)
+		return enabledServices.any { service ->
+			service.resolveInfo.serviceInfo.name?.contains("HomeRemapAccessibilityService") == true
+		}
+	}
 }
 
