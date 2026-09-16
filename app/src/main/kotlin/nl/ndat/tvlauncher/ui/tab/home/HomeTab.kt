@@ -93,6 +93,7 @@ fun HomeTab(
 				HeadingText(R.string.favorite_apps)
 				AppCardRow(
 					apps = favorites,
+					titleRes = null,
 				)
 			}
 		}
