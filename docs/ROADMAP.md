@@ -93,11 +93,11 @@ Possible work: configurable toolbar, layouts, navigation sounds, themes, and plu
 
 ## Phase 10 — Home button remap — Complete
 
-**Goal:** Make BlindPilot respond to the Home button on Google TV.
+**Goal:** Make Balooga respond to the Home button on Google TV.
 
 **Success criteria**
 
-- User can set BlindPilot as the default launcher from within the app.
+- User can set Balooga as the default launcher from within the app.
 - TalkBack-aware prompt encourages default launcher setup when an accessibility service is active.
 
 **Completed:**

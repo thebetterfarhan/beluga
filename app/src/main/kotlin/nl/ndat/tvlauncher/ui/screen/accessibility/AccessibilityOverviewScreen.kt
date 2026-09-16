@@ -214,7 +214,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					debugLauncherLog("default-launcher: isDefault=$isDefaultLauncher talkBack=$talkBackEnabled")
 					val intent = defaultLauncherHelper.requestDefaultLauncherIntent()
 					if (intent != null) {
-						context.startActivity(intent)
+						context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
 					}
 				},
 				modifier = Modifier

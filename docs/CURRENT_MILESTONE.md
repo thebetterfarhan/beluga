@@ -107,7 +107,7 @@ Advance Phase 5 → Phase 6 in ROADMAP and begin planning accessible search or o
 
 ## Update - 2026-09-16 (Home button remap)
 
-- Completed: Committed `60238d7` — Removed broken `HomeRemapAccessibilityService` (Android blocks HOME key interception via accessibility services on Google TV). Replaced with Default Launcher card using `DefaultLauncherHelper.requestDefaultLauncherIntent()` — opens system "set as home app" dialog. Added `AccessibilityServicesHelper` to detect if TalkBack is running; when enabled, card shows targeted prompt: "TalkBack is on. Set BlindPilot as default to get Home button priority."
+- Completed: Committed `60238d7` — Removed broken `HomeRemapAccessibilityService` (Android blocks HOME key interception via accessibility services on Google TV). Replaced with Default Launcher card using `DefaultLauncherHelper.requestDefaultLauncherIntent()` — opens system "set as home app" dialog. Added `AccessibilityServicesHelper` to detect if TalkBack is running; when enabled, card shows targeted prompt: "TalkBack is on. Set Balooga as default to get Home button priority."
 - Evidence/checks: `assembleDebug` / unit tests green, installed on device.
 - Next concrete action: documentation pass — update README and roadmap.
 

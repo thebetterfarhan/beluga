@@ -30,11 +30,11 @@
 	<string name="google_tv_launcher_state_owns_home">Enabled and it owns the Home key</string>
 	<string name="google_tv_launcher_owns_home_summary">This launcher lost the Home key and the system settings page cannot disable the Google TV launcher again. Connect the device to adb and run: adb shell pm disable-user --user 0 com.google.android.apps.tv.launcherx.</string>
 	<string name="set_as_default_launcher">Default launcher</string>
-	<string name="set_as_default_launcher_summary">Set BlindPilot as the default home app so the Home button opens it.</string>
-	<string name="set_as_default_launcher_summary_talkback_on">TalkBack is on. Set BlindPilot as default to get Home button priority.</string>
+	<string name="set_as_default_launcher_summary">Set Balooga as the default home app so the Home button opens it.</string>
+	<string name="set_as_default_launcher_summary_talkback_on">TalkBack is on. Set Balooga as default to get Home button priority.</string>
 	<string name="default_launcher_active">Active</string>
 	<string name="default_launcher_not_active">Not active</string>
-	<string name="default_launcher_active_summary">BlindPilot is your default launcher.</string>
+	<string name="default_launcher_active_summary">Balooga is your default launcher.</string>
 	<string name="channel_watch_next">Watch Next</string>
 	<string name="channel_preview">%1$s: %2$s</string>
 	<string name="tab_home">Home</string>
