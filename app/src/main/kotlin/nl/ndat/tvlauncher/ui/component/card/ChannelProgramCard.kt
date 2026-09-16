@@ -9,7 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -59,7 +61,9 @@ fun ChannelProgramCard(
 			.debugFocusLog("program-card:${program.id}")
 			// A program name is the actionable item's label. Including the row name
 			// here made TalkBack repeat "Watch Next" for every program in the row.
-			.semantics { contentDescription = programLabel },
+			.semantics { contentDescription = programLabel
+				role = Role.Button
+			},
 		border = CardDefaults.border(
 			focusedBorder = Border(
 				border = BorderStroke(2.dp, MaterialTheme.colorScheme.border),

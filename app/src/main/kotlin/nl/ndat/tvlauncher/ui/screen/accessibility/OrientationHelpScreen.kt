@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.paneTitle
@@ -19,11 +22,13 @@ import nl.ndat.tvlauncher.R
 @Composable
 fun OrientationHelpScreen(modifier: Modifier = Modifier) {
 	val title = stringResource(R.string.orientation_help)
+	val focusRequester = remember { FocusRequester() }
 
 	LazyColumn(
 		modifier = modifier
 			.fillMaxSize()
 			.padding(horizontal = 48.dp)
+			.focusRestorer(focusRequester)
 			.semantics { paneTitle = title },
 		verticalArrangement = Arrangement.spacedBy(12.dp),
 	) {
@@ -31,7 +36,7 @@ fun OrientationHelpScreen(modifier: Modifier = Modifier) {
 			Text(
 				text = title,
 				style = MaterialTheme.typography.headlineMedium,
-				modifier = Modifier.padding(top = 12.dp),
+				modifier = Modifier.padding(top = 12.dp).semantics { heading() },
 			)
 		}
 		item {

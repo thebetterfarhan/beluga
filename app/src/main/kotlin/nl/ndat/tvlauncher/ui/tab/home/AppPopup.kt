@@ -9,8 +9,11 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Icon
@@ -28,8 +31,10 @@ fun AppPopup(
 	favoriteFocusModifier: Modifier = Modifier,
 	onAction: () -> Unit,
 ) {
+	val focusRequester = remember { FocusRequester() }
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
+		modifier = Modifier.focusRestorer(focusRequester),
 	) {
 		IconButton(
 			enabled = !isFirst,

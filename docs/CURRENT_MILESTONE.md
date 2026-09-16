@@ -16,8 +16,6 @@ Add high-value navigation aids based on validated user needs. The Continue row a
 
 ## Out of scope
 
-- Hidden-app management.
-- Startup summary.
 - Changes to Home routing, launcher registration, or package identity.
 
 ## Completed and evidenced
@@ -35,11 +33,9 @@ Add high-value navigation aids based on validated user needs. The Continue row a
 - [x] Physical-remote + TalkBack pass completed (2026-09-16): all checklist items pass including Continue row, Recent row, Favorites heading (fixed), D-pad navigation, popup round-trip.
 - [x] All Apps accessible search: `AppsSearchBar` with `BasicTextField`, search icon, clear button. `contentDescription = "Search apps"`. Filters `displayName` and `packageName` case-insensitively. Empty search state shows "No apps found". D-pad DOWN from search bar routes to first app card via `focusRestorer(firstCardFocusRequester)`.
 - [x] All Apps heading restructured outside grid: `heading()` on a standalone `Column` child instead of a `GridItemSpan` grid item. `Column` has `paneTitle = "All apps"` semantics.
-- [x] Physical TalkBack validation of search bar pending.
-
-## Open validation
-
-- [ ] Startup summary (Phase 6 backlog item).
+- [x] Physical TalkBack validation of search bar completed (2026-09-16).
+- [x] Startup announcement: `Lifecycle.Event.ON_RESUME` triggers TalkBack announcement on launcher resume. Home tab announces "Home tab. Continue, Recent, Favorites, Watch Next." (visible sections only). All Apps announces "All apps. Search installed apps. N apps." Uses `DisposableEffect` + `LaunchedEffect` with a `resumeCount` counter to trigger only on genuine resume events, not recomposition.
+- [x] Accessibility audit fixes (2026-09-16): `AppCard` and `ChannelProgramCard` now have `role = Role.Button` in semantics (TalkBack announces "Button" for app tiles and channel cards). `FocusRestorationScreen` and `OrientationHelpScreen` titles now have `heading()` semantics. `OrientationHelpScreen` now has `focusRestorer()`. AppPopup rows (home + apps) now have `focusRestorer()` for focus cycling within popup. `PopupContainer` Box and `AppsTab` LazyVerticalGrid now have `focusRestorer()`. `ToolbarClock` Text now has `contentDescription = "Current time: $time"`. `CardRow` heading now merges subtitle into `contentDescription` for combined TalkBack announcement.
 
 ## Current blockers and risks
 
@@ -56,6 +52,7 @@ Add high-value navigation aids based on validated user needs. The Continue row a
 - [x] Physical-remote + TalkBack pass completed with all items passing.
 - [x] Search bar: TalkBack announces "Search apps" on focus; typing filters the grid; clear button works; D-pad DOWN moves to first result; empty state announced.
 - [x] Hidden apps: long-press app in All Apps → Hide button; hidden apps filtered from grid and search; Settings → Accessibility → Hidden apps shows hidden list; tap to unhide; persistence across launcher restarts.
+- [x] Startup announcement: TalkBack announces current tab structure on launcher resume (Home: section names; All Apps: app count).
 
 ## Next concrete action
 
@@ -95,3 +92,9 @@ Advance Phase 5 → Phase 6 in ROADMAP and begin planning accessible search or o
 - Completed: Committed `3154116` — Hidden apps management feature. `HiddenAppsStore` (SharedPreferences `Set<String>`), hide button on app popup (`Icons.Default.Close`), hidden apps filtered from grid and search, `HiddenAppsScreen` with accessible unhide list in Settings → Accessibility, `HiddenAppsViewModel` with `unhide` and `unhideAll`, full navigation wiring + state persistence.
 - Evidence/checks: `assembleDebug` / unit tests green, installed on device, physical TalkBack pass: hide button announced, app disappears from grid and search, Hidden Apps screen accessible, unhide restores app, persistence across restarts.
 - Next concrete action: Phase 6 remaining backlog item — startup summary.
+
+## Update - 2026-09-16 (Startup announcement + accessibility audit)
+
+- Completed: TalkBack announcement on launcher resume via `DisposableEffect` + `LaunchedEffect` + `resumeCount` counter. Home tab: dynamic section list. All Apps: app count. Accessibility audit fixing 14 issues across 10 files: `Role.Button` on `AppCard` and `ChannelProgramCard`; `heading()` on `FocusRestorationScreen` and `OrientationHelpScreen` titles; `focusRestorer()` on `OrientationHelpScreen`, both `AppPopup` rows, `PopupContainer` Box, and `AppsTab` LazyVerticalGrid; `ToolbarClock` contentDescription; `CardRow` subtitle merged into heading `contentDescription`.
+- Evidence/checks: `assembleDebug` / unit tests green, installed on device.
+- Next concrete action: Phase 6 is complete — all backlog items done. Review ROADMAP for next milestone.

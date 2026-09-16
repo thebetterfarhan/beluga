@@ -54,4 +54,6 @@
 	<string name="search_result_count">%1$d apps</string>
 	<string name="search_result_count_singular">1 app</string>
 	<string name="search_no_results">No apps found</string>
+	<string name="announce_home_tab">Home tab. Continue, Recent, Favorites, Watch Next.</string>
+	<string name="announce_apps_tab">All apps. Search installed apps.</string>
 </resources>

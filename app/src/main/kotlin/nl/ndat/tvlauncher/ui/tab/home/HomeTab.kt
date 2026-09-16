@@ -1,23 +1,32 @@
 package nl.ndat.tvlauncher.ui.tab.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRestorer
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import nl.ndat.tvlauncher.R
@@ -58,6 +67,32 @@ fun HomeTab(
 			.take(RecentRowCap)
 	}
 	val anyChannels = channels.isNotEmpty() || watchNextPrograms.isNotEmpty()
+
+	// Announce tab structure to TalkBack on every launcher resume.
+	val lifecycleOwner = LocalLifecycleOwner.current
+	var resumeCount by remember { mutableStateOf(0L) }
+	DisposableEffect(lifecycleOwner) {
+		val observer = LifecycleEventObserver { _, event ->
+			if (event == Lifecycle.Event.ON_RESUME) resumeCount++
+		}
+		lifecycleOwner.lifecycle.addObserver(observer)
+		onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+	}
+	var homeAnnouncement by remember { mutableStateOf<String?>(null) }
+	val announceHomeDefault = stringResource(R.string.announce_home_tab)
+	LaunchedEffect(resumeCount, continueApp, recentApps, favorites, anyChannels, announceHomeDefault) {
+		val sections = buildList {
+			if (continueApp != null) add("Continue")
+			if (recentApps.isNotEmpty()) add("Recent")
+			if (favorites.isNotEmpty()) add("Favorites")
+			if (anyChannels) add("Watch Next")
+		}
+		homeAnnouncement = if (sections.isEmpty()) {
+			announceHomeDefault
+		} else {
+			"Home tab. ${sections.joinToString(", ")}."
+		}
+	}
 
 	LazyColumn(
 		state = listState,
@@ -128,6 +163,14 @@ fun HomeTab(
 					)
 				}
 			}
+		}
+	}
+
+	homeAnnouncement?.let { announcement ->
+		Box(
+			modifier = Modifier.clearAndSetSemantics { contentDescription = announcement }
+		) {
+			Text(text = "", style = MaterialTheme.typography.bodyMedium)
 		}
 	}
 }

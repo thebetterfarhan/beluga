@@ -59,20 +59,21 @@ Status labels: **Now**, **Next**, **Planned**, **Later**, and **Complete**. Move
 - Baseline-profile architecture added (`:baselineprofile` module, committed `baseline-prof.txt`).
 - Physical-remote + TalkBack pass completed (2026-09-16).
 
-## Phase 6 — Blind productivity features — Now
+## Phase 6 — Blind productivity features — Complete
 
 **Goal:** Add high-value navigation aids based on validated user needs.
-
-**Current progress**
-
-- Continue row and Recent apps row implemented and validated on device.
 
 **Success criteria**
 
 - Recently used apps are surfaced in a way that is accessible and predictable.
 - Accessible search is usable with D-pad and TalkBack.
 
-Possible work: accessible search, recently used apps, hidden-app management, startup summary, and accessibility profiles.
+**Completed:**
+- Continue row and Recent apps row implemented and validated on device.
+- Accessible search bar with D-pad navigation and TalkBack filtering.
+- Hidden-app management: hide from All Apps grid, unhide from Settings → Accessibility → Hidden apps, persistence across restarts.
+- Startup TalkBack announcement: Home tab announces section structure on resume; All Apps announces app count on resume.
+- Accessibility audit: 14 issues fixed across 10 files (Role.Button on cards, heading() on screen titles, focusRestorer() on popups and screens, contentDescription on clock, CardRow subtitle semantics).
 
 ## Phase 7 — Customization — Later
 

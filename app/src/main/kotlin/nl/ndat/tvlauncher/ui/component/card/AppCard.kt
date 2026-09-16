@@ -24,8 +24,10 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onLongClick
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -122,8 +124,9 @@ fun AppCard(
 							.focusRequester(cardFocusRequester)
 							.onFocusChanged { if (it.isFocused) debugTrace("focus-write:app-${app.id}") { onFocused?.invoke() } }
 							.debugFocusLog("app-card:${app.id}")
-							.semantics {
+						.semantics {
 								contentDescription = app.displayName
+								role = Role.Button
 								if (popupContent != null) {
 									onLongClick(label = appOptionsLabel) {
 										menuVisible = true

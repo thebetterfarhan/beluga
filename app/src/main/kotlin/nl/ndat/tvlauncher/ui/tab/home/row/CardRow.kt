@@ -16,6 +16,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRestorer
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -34,15 +35,17 @@ fun CardRow(
 ) = Column(
 	modifier = modifier
 ) {
-	if (title != null || subtitle != null) {
+		if (title != null || subtitle != null) {
 		if (title != null) {
+			val headingText = if (subtitle != null) "$title. $subtitle" else title
 			Text(
 				text = title,
 				fontSize = 18.sp,
-				// This remains available as a heading to screen-reader users without
-				// becoming a D-pad focus target or being repeated in every card label.
 				modifier = Modifier
-					.semantics { heading() }
+					.semantics {
+						heading()
+						contentDescription = headingText
+					}
 					.padding(
 						vertical = 4.dp,
 						horizontal = 48.dp,
@@ -50,7 +53,7 @@ fun CardRow(
 			)
 		}
 
-		if (subtitle != null) {
+		if (subtitle != null && title == null) {
 			Text(
 				text = subtitle,
 				style = MaterialTheme.typography.bodySmall,

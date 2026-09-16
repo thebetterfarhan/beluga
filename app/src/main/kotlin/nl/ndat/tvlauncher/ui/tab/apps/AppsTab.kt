@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,11 +25,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.paneTitle
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import nl.ndat.tvlauncher.R
@@ -55,6 +61,30 @@ fun AppsTab(
 		?.let { savedId -> apps.firstOrNull { app -> app.id == savedId } }
 		?: apps.firstOrNull()
 	val gridState = rememberLazyGridState(viewModel.appsScrollIndex())
+	val gridFocusRequester = remember { FocusRequester() }
+
+	val lifecycleOwner = LocalLifecycleOwner.current
+	var resumeCount by remember { mutableStateOf(0L) }
+	DisposableEffect(lifecycleOwner) {
+		val observer = LifecycleEventObserver { _, event ->
+			if (event == Lifecycle.Event.ON_RESUME) resumeCount++
+		}
+		lifecycleOwner.lifecycle.addObserver(observer)
+		onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+	}
+	val announceAppsTab = stringResource(R.string.announce_apps_tab)
+	val announceSingular = stringResource(R.string.search_result_count_singular)
+	val announcePlural = stringResource(R.string.search_result_count, 0)
+	var appsAnnouncement by remember { mutableStateOf<String?>(null) }
+	LaunchedEffect(resumeCount, apps, announceAppsTab) {
+		appsAnnouncement = buildString {
+			append(announceAppsTab)
+			if (apps.isNotEmpty()) {
+				val countLabel = if (apps.size == 1) announceSingular else "$apps.size apps"
+				append(" $countLabel.")
+			}
+		}
+	}
 
 	// Restore focus to the grid on startup when ALL_APPS_TAB is the saved
 	// destination, so the user lands in the app grid rather than the search field.
@@ -118,7 +148,7 @@ fun AppsTab(
 			verticalArrangement = Arrangement.spacedBy(14.dp),
 			horizontalArrangement = Arrangement.spacedBy(14.dp),
 			columns = GridCells.Adaptive(90.dp * (16f / 9f)),
-			modifier = Modifier.fillMaxSize(),
+			modifier = Modifier.fillMaxSize().focusRestorer(gridFocusRequester),
 		) {
 			items(
 				items = apps,
@@ -150,6 +180,14 @@ fun AppsTab(
 					)
 				}
 			}
+		}
+	}
+
+	appsAnnouncement?.let { announcement ->
+		Box(
+			modifier = Modifier.clearAndSetSemantics { contentDescription = announcement }
+		) {
+			Text(text = "", style = MaterialTheme.typography.bodyMedium)
 		}
 	}
 }

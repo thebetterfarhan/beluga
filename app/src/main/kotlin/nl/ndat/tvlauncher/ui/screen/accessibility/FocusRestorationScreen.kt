@@ -20,6 +20,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.paneTitle
@@ -63,7 +64,7 @@ fun FocusRestorationScreen(modifier: Modifier = Modifier) {
 			Text(
 				text = title,
 				style = MaterialTheme.typography.headlineMedium,
-				modifier = Modifier.padding(top = 12.dp),
+				modifier = Modifier.padding(top = 12.dp).semantics { heading() },
 			)
 		}
 		item {
