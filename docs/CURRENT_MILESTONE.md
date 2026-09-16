@@ -111,3 +111,13 @@ Complete the remaining manual TalkBack and physical-remote checklist paths: Apps
 - Evidence/checks: on-device hierarchy shows one merged name/state/action ("Google TV launcher. Disabled. ..."); activation opened `com.android.tv.settings/.device.apps.AppManagementActivity`; Back returned focus to the same card; `assembleDebug`/lint/unit tests green.
 - Open risk or blocker: spoken wording requires manual TalkBack pass; baseline-profile generation task still exits nonzero after successful runs (workaround documented).
 - Next concrete action: manual TalkBack + physical-remote checklist (Apps-grid flicker, last-favorite row-end jump, popup wording, app-card options, app return, Watch Next), including the new Google TV launcher card wording.
+
+## Update - 2026-09-16 (Continue + Recent apps feature)
+
+- Completed: Committed `cf8a328` — Home tab Continue row + Recent apps row. 31 files, +1,062/−56 lines. `assembleDebug`/`lintDebug`/`testDebugUnitTest` green.
+- Continue row: shows last-focused app with subtitle "Open the last app you were using." Falls back to most-recent app from MRU if last-focused app is no longer installed.
+- Recent row: up to 4 most-recently opened apps, most-recent-first, capped at 8 in `RecentAppsStore`. Each card focus updates the MRU list via `recordOpenedApp()`.
+- New util/ classes with tests: `RecentAppsStore`, `PreferenceStore`/`SharedPreferenceStore`, `FocusRestorationManager`, `LastFocusedAppStore`, `LauncherStateStore`/`LauncherStateRecorder`, `LauncherStateSnapshot`, `AccessibilityPreferences`, `FocusRestoreMode`, `DestinationMapping`, `GoogleTvLauncherHelper`, `RefreshStalenessTracker`, `DebugTrace`, `startupFocus`, `debugFocusLog`. Eight test classes covering all new code.
+- Note: These util/ files existed as uncommitted WIP from the previous session. Verified build and tests before committing.
+- Open risk or blocker: Phase 6 ("Blind productivity features — recently used apps") work started early; manual TalkBack pass for the new Continue/Recent rows still pending device validation.
+- Next concrete action: manual TalkBack + physical-remote checklist for Continue/Recent rows; then advance Phase 5 → Phase 6 in ROADMAP.

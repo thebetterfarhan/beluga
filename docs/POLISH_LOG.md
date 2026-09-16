@@ -1,5 +1,16 @@
 # Accessibility Polish Log
 
+## 2026-09-16 - Continue + Recent apps feature committed
+
+- **Completed:** Committed `cf8a328` — Home tab Continue row + Recent apps row feature. 31 files, +1,062/−56 lines.
+- **Continue row:** Single card showing the last-focused app with subtitle "Open the last app you were using." Powered by `LastFocusedAppStore` StateFlow + `RecentAppsStore` MRU list.
+- **Recent row:** Up to 4 most-recently opened apps (most-recent-first). MRU cap of 8 in `RecentAppsStore`; displayed as 4 in the UI (`RecentRowCap = 4`).
+- **Tracking:** `AppCardRow.onFocused` calls `viewModel.recordOpenedApp(app.id)`, updating `RecentAppsStore` and triggering recomposition via `recentAppIdsFlow` StateFlow.
+- **New util/ classes:** `PreferenceStore`, `SharedPreferenceStore`, `RecentAppsStore`, `FocusRestorationManager`, `LastFocusedAppStore`, `LauncherStateStore`, `LauncherStateRecorder`, `LauncherStateSnapshot`, `AccessibilityPreferences`, `FocusRestoreMode`, `DestinationMapping`, `GoogleTvLauncherHelper`, `RefreshStalenessTracker`, `DebugTrace`, `startupFocus`, `debugFocusLog`.
+- **Tests:** 8 new test classes covering all new util classes. `RecentAppsStoreTest` (7 cases), `FocusRestorationManagerTest` (4), `LastFocusedAppStoreTest` (4), `LauncherStateStoreTest` (5), `LauncherStateRecorderTest` (5), `AccessibilityPreferencesTest` (4), `DestinationMappingTest` (4), `RefreshStalenessTrackerTest` (3). Plus `InMemoryPreferenceStore` fixture.
+- **Verification:** `assembleDebug`, `lintDebug`, `testDebugUnitTest` all green. No new lint warnings introduced.
+- **Previous state:** These changes existed as uncommitted WIP from the previous session. Verified they build and test cleanly before committing.
+
 ## 2026-09-14 - Focus-restoration detail semantics check
 
 - **Validation:** Opened Focus restoration without changing its selected mode. The selected `Home tab` row was the only focused launcher node.
