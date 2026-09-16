@@ -1,7 +1,6 @@
 package nl.ndat.tvlauncher.ui.tab.home.row
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -10,14 +9,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRestorer
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,11 +34,12 @@ fun CardRow(
 	title: String? = null,
 	subtitle: String? = null,
 	firstItemFocusRequester: FocusRequester? = null,
+	listState: LazyListState = rememberLazyListState(),
 	content: LazyListScope.(childFocusRequester: FocusRequester) -> Unit,
 ) = Column(
 	modifier = modifier
 ) {
-		if (title != null || subtitle != null) {
+	if (title != null || subtitle != null) {
 		if (title != null) {
 			val headingText = if (subtitle != null) "$title. $subtitle" else title
 			Text(
@@ -73,6 +77,7 @@ fun CardRow(
 	val childFocusRequester = firstItemFocusRequester ?: remember { FocusRequester() }
 
 	LazyRow(
+		state = listState,
 		contentPadding = PaddingValues(
 			vertical = 16.dp,
 			horizontal = 48.dp,
