@@ -30,7 +30,7 @@ import androidx.tv.material3.Text
 import nl.ndat.tvlauncher.R
 import nl.ndat.tvlauncher.data.Destinations
 import nl.ndat.tvlauncher.util.AccessibilityServicesHelper
-import nl.ndat.tvlauncher.util.DefaultLauncherHelper
+import nl.ndat.tvlauncher.util.GoogleTvLauncherHelper
 import nl.ndat.tvlauncher.util.composition.LocalBackStack
 import nl.ndat.tvlauncher.util.modifier.debugLauncherLog
 import org.koin.androidx.compose.koinViewModel
@@ -196,50 +196,53 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 			}
 		}
 		item {
-			val defaultLauncherHelper = remember(context) { DefaultLauncherHelper(context) }
-			val isDefaultLauncher = remember { defaultLauncherHelper.isDefaultLauncher() }
-			val talkBackEnabled = remember { AccessibilityServicesHelper.isTalkBackEnabled(context) }
-			val setAsDefaultLauncher = stringResource(R.string.set_as_default_launcher)
-			val setAsDefaultLauncherSummary = stringResource(R.string.set_as_default_launcher_summary)
-			val defaultLauncherSummary = stringResource(R.string.default_launcher_active_summary)
-			val defaultLauncherState = if (isDefaultLauncher) {
-				stringResource(R.string.default_launcher_active)
-			} else {
-				stringResource(R.string.default_launcher_not_active)
+			val googleTvHelper = remember(context) { GoogleTvLauncherHelper(context) }
+			val isInstalled = remember { googleTvHelper.isInstalled }
+			val isDisabled = remember { googleTvHelper.isDisabledByUser() }
+			val resolvesAsHome = remember { googleTvHelper.resolvesAsHome() }
+			val googleTvLauncher = stringResource(R.string.google_tv_launcher)
+			val googleTvState = when {
+				!isInstalled -> return@item
+				isDisabled -> stringResource(R.string.google_tv_launcher_state_disabled)
+				resolvesAsHome -> stringResource(R.string.google_tv_launcher_state_owns_home)
+				else -> stringResource(R.string.google_tv_launcher_state_enabled)
 			}
-			val cardSummary = when {
-				isDefaultLauncher -> defaultLauncherSummary
-				talkBackEnabled -> stringResource(R.string.set_as_default_launcher_summary_talkback_on)
-				else -> setAsDefaultLauncherSummary
+			val googleTvSummary = when {
+				!isInstalled -> return@item
+				isDisabled -> ""
+			 resolvesAsHome -> stringResource(R.string.google_tv_launcher_owns_home_summary)
+				else -> stringResource(R.string.google_tv_launcher_summary)
 			}
-			val cardContentDesc = "$setAsDefaultLauncher. $defaultLauncherState. $cardSummary"
+			val cardDesc = if (googleTvSummary.isNotEmpty()) "$googleTvLauncher. $googleTvState. $googleTvSummary" else "$googleTvLauncher. $googleTvState"
 			Card(
 				onClick = {
-					debugLauncherLog("default-launcher: isDefault=$isDefaultLauncher talkBack=$talkBackEnabled")
-					context.startActivity(defaultLauncherHelper.requestDefaultLauncherIntent())
+					debugLauncherLog("google-tv-launcher: disabled=$isDisabled resolvesHome=$resolvesAsHome")
+					context.startActivity(googleTvHelper.appDetailsIntent())
 				},
 				modifier = Modifier
 					.fillMaxWidth()
 					.onFocusChanged {
-						debugLauncherLog("default-launcher: focused=${it.isFocused} hasFocus=${it.hasFocus}")
+						debugLauncherLog("google-tv-launcher: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
 					.semantics(mergeDescendants = true) {
-						contentDescription = cardContentDesc
+						contentDescription = cardDesc
 						role = Role.Button
 					},
 			) {
 				Column(modifier = Modifier.padding(20.dp).clearAndSetSemantics { }) {
-					Text(text = setAsDefaultLauncher, style = MaterialTheme.typography.titleMedium)
+					Text(text = googleTvLauncher, style = MaterialTheme.typography.titleMedium)
 					Text(
-						text = defaultLauncherState,
+						text = googleTvState,
 						style = MaterialTheme.typography.bodyMedium,
 						modifier = Modifier.padding(top = 4.dp),
 					)
-					Text(
-						text = cardSummary,
-						style = MaterialTheme.typography.bodyMedium,
-						modifier = Modifier.padding(top = 4.dp),
-					)
+					if (googleTvSummary.isNotEmpty()) {
+						Text(
+							text = googleTvSummary,
+							style = MaterialTheme.typography.bodyMedium,
+							modifier = Modifier.padding(top = 4.dp),
+						)
+					}
 				}
 			}
 		}
