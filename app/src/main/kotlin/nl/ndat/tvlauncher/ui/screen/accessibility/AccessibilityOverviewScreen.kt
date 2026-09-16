@@ -84,12 +84,12 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					.onFocusChanged {
 						debugLauncherLog("settings-overview: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
-					.clearAndSetSemantics {
+					.semantics(mergeDescendants = true) {
 						contentDescription = cardDesc
 						role = Role.Button
 					},
 			) {
-				Column(modifier = Modifier.padding(20.dp)) {
+				Column(modifier = Modifier.padding(20.dp).clearAndSetSemantics { }) {
 					Text(text = settingName, style = MaterialTheme.typography.titleMedium)
 					Text(
 						text = focusRestoreCurrentValue,
@@ -108,12 +108,12 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					.onFocusChanged {
 						debugLauncherLog("orientation-help: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
-					.clearAndSetSemantics {
+					.semantics(mergeDescendants = true) {
 						contentDescription = cardDesc
 						role = Role.Button
 					},
 			) {
-				Column(modifier = Modifier.padding(20.dp)) {
+				Column(modifier = Modifier.padding(20.dp).clearAndSetSemantics { }) {
 					Text(text = orientationHelp, style = MaterialTheme.typography.titleMedium)
 					Text(
 						text = orientationHelpSummary,
@@ -132,12 +132,12 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					.onFocusChanged {
 						debugLauncherLog("hidden-apps: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
-					.clearAndSetSemantics {
+					.semantics(mergeDescendants = true) {
 						contentDescription = cardDesc
 						role = Role.Button
 					},
 			) {
-				Column(modifier = Modifier.padding(20.dp)) {
+				Column(modifier = Modifier.padding(20.dp).clearAndSetSemantics { }) {
 					Text(text = hiddenApps, style = MaterialTheme.typography.titleMedium)
 					Text(
 						text = hiddenAppsSummary,
@@ -156,12 +156,12 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					.onFocusChanged {
 						debugLauncherLog("home-layout: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
-					.clearAndSetSemantics {
+					.semantics(mergeDescendants = true) {
 						contentDescription = cardDesc
 						role = Role.Button
 					},
 			) {
-				Column(modifier = Modifier.padding(20.dp)) {
+				Column(modifier = Modifier.padding(20.dp).clearAndSetSemantics { }) {
 					Text(text = homeLayout, style = MaterialTheme.typography.titleMedium)
 					Text(
 						text = homeLayoutSummary,
@@ -180,12 +180,12 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					.onFocusChanged {
 						debugLauncherLog("app-language: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
-					.clearAndSetSemantics {
+					.semantics(mergeDescendants = true) {
 						contentDescription = cardDesc
 						role = Role.Button
 					},
 			) {
-				Column(modifier = Modifier.padding(20.dp)) {
+				Column(modifier = Modifier.padding(20.dp).clearAndSetSemantics { }) {
 					Text(text = appLanguage, style = MaterialTheme.typography.titleMedium)
 					Text(
 						text = appLanguageSummary,
@@ -216,22 +216,19 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 			Card(
 				onClick = {
 					debugLauncherLog("default-launcher: isDefault=$isDefaultLauncher talkBack=$talkBackEnabled")
-					val intent = defaultLauncherHelper.requestDefaultLauncherIntent()
-					if (intent != null) {
-						context.startActivity(intent)
-					}
+					context.startActivity(defaultLauncherHelper.requestDefaultLauncherIntent())
 				},
 				modifier = Modifier
 					.fillMaxWidth()
 					.onFocusChanged {
 						debugLauncherLog("default-launcher: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
-					.clearAndSetSemantics {
+					.semantics(mergeDescendants = true) {
 						contentDescription = cardContentDesc
 						role = Role.Button
 					},
 			) {
-				Column(modifier = Modifier.padding(20.dp)) {
+				Column(modifier = Modifier.padding(20.dp).clearAndSetSemantics { }) {
 					Text(text = setAsDefaultLauncher, style = MaterialTheme.typography.titleMedium)
 					Text(
 						text = defaultLauncherState,
@@ -255,12 +252,12 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					.onFocusChanged {
 						debugLauncherLog("channel-prefs: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
-					.clearAndSetSemantics {
+					.semantics(mergeDescendants = true) {
 						contentDescription = cardDesc
 						role = Role.Button
 					},
 			) {
-				Column(modifier = Modifier.padding(20.dp)) {
+				Column(modifier = Modifier.padding(20.dp).clearAndSetSemantics { }) {
 					Text(text = channelPrefs, style = MaterialTheme.typography.titleMedium)
 					Text(
 						text = channelPrefsSummary,

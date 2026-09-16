@@ -20,8 +20,8 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.paneTitle
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
@@ -107,8 +107,7 @@ private fun FocusRestoreOption(
 	Card(
 		onClick = onClick,
 		modifier = modifier.fillMaxWidth().semantics(mergeDescendants = true) {
-			contentDescription = name
-			stateDescription = description
+			contentDescription = "$name. $description"
 			this.selected = selected
 			role = Role.RadioButton
 		},
@@ -117,12 +116,12 @@ private fun FocusRestoreOption(
 			Text(
 				text = name,
 				style = MaterialTheme.typography.titleMedium,
-				modifier = Modifier.clearAndSetSemantics { },
+				modifier = Modifier.semantics { hideFromAccessibility() },
 			)
 			Text(
 				text = description,
 				style = MaterialTheme.typography.bodyMedium,
-				modifier = Modifier.padding(top = 4.dp).clearAndSetSemantics { },
+				modifier = Modifier.padding(top = 4.dp).semantics { hideFromAccessibility() },
 			)
 		}
 	}
