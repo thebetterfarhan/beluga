@@ -43,6 +43,7 @@ class ChannelRepository(
 			description = channel.description,
 			packageName = channel.packageName,
 			appLinkIntentUri = channel.appLinkIntentUri,
+			weight = channel.weight,
 		).await()
 	}
 
@@ -149,6 +150,7 @@ class ChannelRepository(
 			description = null,
 			packageName = "",
 			appLinkIntentUri = null,
+			weight = 0,
 		)
 		val programs = channelResolver.getWatchNextPrograms(context)
 

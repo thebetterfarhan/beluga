@@ -150,6 +150,7 @@ class ChannelResolver {
 		description = description?.toString(),
 		packageName = packageName,
 		appLinkIntentUri = appLinkIntentUri.toString(),
+		weight = 0,
 	)
 
 	@Suppress("USELESS_ELVIS")

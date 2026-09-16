@@ -12,6 +12,7 @@ fun Destination.toSavedDestination(): SavedDestination = when (this) {
 	Destinations.HiddenApps -> SavedDestination.HIDDEN_APPS
 	Destinations.HomePreferences -> SavedDestination.HOME_PREFERENCES
 	Destinations.AppLanguage -> SavedDestination.APP_LANGUAGE
+	Destinations.ChannelPreferences -> SavedDestination.CHANNEL_PREFERENCES
 	else -> SavedDestination.HOME
 }
 
@@ -24,6 +25,7 @@ fun SavedDestination.toDestination(): Destination = when (this) {
 	SavedDestination.HIDDEN_APPS -> Destinations.HiddenApps
 	SavedDestination.HOME_PREFERENCES -> Destinations.HomePreferences
 	SavedDestination.APP_LANGUAGE -> Destinations.AppLanguage
+	SavedDestination.CHANNEL_PREFERENCES -> Destinations.ChannelPreferences
 }
 
 fun SavedDestination.isTabDestination(): Boolean =

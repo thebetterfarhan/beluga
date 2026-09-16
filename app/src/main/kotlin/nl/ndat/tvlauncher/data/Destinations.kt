@@ -6,6 +6,7 @@ import nl.ndat.tvlauncher.ui.tab.apps.AppsTab
 import nl.ndat.tvlauncher.ui.tab.home.HomeTab
 import nl.ndat.tvlauncher.ui.screen.accessibility.AccessibilityOverviewScreen
 import nl.ndat.tvlauncher.ui.screen.accessibility.AppLanguageScreen
+import nl.ndat.tvlauncher.ui.screen.accessibility.ChannelPreferencesScreen
 import nl.ndat.tvlauncher.ui.screen.accessibility.FocusRestorationScreen
 import nl.ndat.tvlauncher.ui.screen.accessibility.HiddenAppsScreen
 import nl.ndat.tvlauncher.ui.screen.accessibility.HomePreferencesScreen
@@ -63,6 +64,12 @@ object Destinations {
 	object AppLanguage : Destination {
 		@Composable
 		override fun Content() = AppLanguageScreen()
+	}
+
+	@Serializable
+	object ChannelPreferences : Destination {
+		@Composable
+		override fun Content() = ChannelPreferencesScreen()
 	}
 }
 

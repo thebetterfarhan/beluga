@@ -7,17 +7,18 @@ CREATE TABLE Channel (
 	displayName TEXT NOT NULL,
 	description TEXT,
 	packageName TEXT NOT NULL,
-	appLinkIntentUri TEXT
+	appLinkIntentUri TEXT,
+	weight INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE INDEX channelType ON Channel(type);
 CREATE INDEX channelPackageName ON Channel(packageName);
 
 getAll:
-SELECT * FROM Channel;
+SELECT * FROM Channel ORDER BY weight ASC;
 
 getFavoriteAppChannels:
-SELECT * FROM Channel WHERE (SELECT favoriteOrder FROM App WHERE App.packageName = Channel.packageName) IS NOT NULL;
+SELECT * FROM Channel WHERE (SELECT favoriteOrder FROM App WHERE App.packageName = Channel.packageName) IS NOT NULL ORDER BY weight ASC;
 
 getById:
 SELECT * FROM Channel WHERE id = :id LIMIT 1;
@@ -32,7 +33,8 @@ upsert {
         displayName = :displayName,
         description = :description,
         packageName = :packageName,
-        appLinkIntentUri = :appLinkIntentUri
+        appLinkIntentUri = :appLinkIntentUri,
+        weight = :weight
 	WHERE id = :id;
 
 	INSERT OR IGNORE INTO Channel (
@@ -42,7 +44,8 @@ upsert {
         displayName,
         description,
         packageName,
-        appLinkIntentUri
+        appLinkIntentUri,
+        weight
 	) VALUES (
 		:id,
 		:type,
@@ -50,9 +53,13 @@ upsert {
         :displayName,
         :description,
         :packageName,
-        :appLinkIntentUri
+        :appLinkIntentUri,
+        :weight
 	);
 }
+
+updateChannelWeight:
+UPDATE Channel SET weight = :weight WHERE id = :id;
 
 removeById:
 DELETE FROM Channel WHERE id = :id;

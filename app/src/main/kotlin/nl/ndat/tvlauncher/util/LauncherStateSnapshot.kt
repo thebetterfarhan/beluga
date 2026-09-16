@@ -27,4 +27,5 @@ enum class SavedDestination {
 	HIDDEN_APPS,
 	HOME_PREFERENCES,
 	APP_LANGUAGE,
+	CHANNEL_PREFERENCES,
 }

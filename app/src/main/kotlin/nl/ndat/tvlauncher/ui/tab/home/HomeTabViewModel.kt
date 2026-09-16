@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,6 +19,7 @@ import nl.ndat.tvlauncher.util.LauncherStateScrollPositions
 import nl.ndat.tvlauncher.util.FocusRestorationManager
 import nl.ndat.tvlauncher.util.RecentAppsStore
 import nl.ndat.tvlauncher.util.HomePreferences
+import nl.ndat.tvlauncher.util.ChannelPreferences
 
 class HomeTabViewModel(
 	private val appRepository: AppRepository,
@@ -27,6 +29,7 @@ class HomeTabViewModel(
 	private val focusRestorationManager: FocusRestorationManager,
 	private val launcherStateRecorder: LauncherStateRecorder,
 	private val homePreferences: HomePreferences,
+	private val channelPreferences: ChannelPreferences,
 ) : ViewModel() {
 	val lastFocusedAppId = lastFocusedAppStore.id
 	fun preferredFavoriteIndex(apps: List<App>) =
@@ -54,6 +57,11 @@ class HomeTabViewModel(
 		.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
 	val channels = channelRepository.getFavoriteAppChannels()
+		.let { flow ->
+			val storedOrder = channelPreferences.getChannelOrder().toList()
+			if (storedOrder.isEmpty()) flow
+			else flow.map { channelList -> orderChannels(channelList, storedOrder) }
+		}
 		.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
 	val watchNextPrograms = channelRepository.getWatchNextPrograms()
@@ -82,7 +90,18 @@ class HomeTabViewModel(
 		}
 	}
 
-	val showContinue = MutableStateFlow(homePreferences.showContinue())
-	val showRecent = MutableStateFlow(homePreferences.showRecent())
-	val showWatchNext = MutableStateFlow(homePreferences.showWatchNext())
+		val showContinue = MutableStateFlow(homePreferences.showContinue())
+		val showRecent = MutableStateFlow(homePreferences.showRecent())
+		val showWatchNext = MutableStateFlow(homePreferences.showWatchNext())
+
+	private fun orderChannels(channels: List<Channel>, storedOrder: List<String>): List<Channel> {
+		val channelMap = channels.associateBy { it.id }
+		val ordered = mutableListOf<Channel>()
+		val remaining = channelMap.values.toMutableSet()
+		for (id in storedOrder) {
+			channelMap[id]?.let { ordered.add(it); remaining.remove(it) }
+		}
+		ordered.addAll(remaining)
+		return ordered
+	}
 }

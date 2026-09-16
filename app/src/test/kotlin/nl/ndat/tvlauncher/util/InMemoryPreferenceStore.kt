@@ -17,6 +17,13 @@ class InMemoryPreferenceStore : PreferenceStore {
 		data[key] = value
 	}
 
+	override fun getStringSet(key: String, defaultValue: Set<String>): Set<String> =
+		@Suppress("UNCHECKED_CAST") (data[key] as? Set<String>) ?: defaultValue
+
+	override fun setStringSet(key: String, value: Set<String>) {
+		data[key] = value
+	}
+
 	override fun remove(key: String) {
 		data.remove(key)
 	}

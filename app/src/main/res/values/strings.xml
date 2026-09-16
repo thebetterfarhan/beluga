@@ -72,4 +72,7 @@
 	<string name="app_language_summary">Choose your preferred language for apps on this device. This opens the system language settings.</string>
 	<string name="app_language_system_settings">Open system language settings</string>
 	<string name="app_language_system_settings_desc">Configure per-app language in the system settings.</string>
+	<string name="channel_preferences">Channel order</string>
+	<string name="channel_preferences_summary">Drag channels to reorder them on the Home screen.</string>
+	<string name="no_channels">No channels available</string>
 </resources>

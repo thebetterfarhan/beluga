@@ -61,6 +61,8 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 	val homeLayoutSummary = stringResource(R.string.home_layout_summary)
 	val appLanguage = stringResource(R.string.app_language)
 	val appLanguageSummary = stringResource(R.string.app_language_summary)
+	val channelPrefs = stringResource(R.string.channel_preferences)
+	val channelPrefsSummary = stringResource(R.string.channel_preferences_summary)
 	val context = LocalContext.current
 
 	// Stock launcher state changes only on the App-Info page; refresh on RESUMED.
@@ -252,6 +254,29 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					)
 					Text(
 						text = googleTvSummary,
+						style = MaterialTheme.typography.bodyMedium,
+						modifier = Modifier.padding(top = 4.dp),
+					)
+				}
+			}
+		}
+		item {
+			Card(
+				onClick = { backStack.add(Destinations.ChannelPreferences) },
+				modifier = Modifier
+					.fillMaxWidth()
+					.onFocusChanged {
+						debugLauncherLog("channel-prefs: focused=${it.isFocused} hasFocus=${it.hasFocus}")
+					}
+					.semantics(mergeDescendants = true) {
+						contentDescription = "$channelPrefs. $channelPrefsSummary"
+						role = Role.Button
+					},
+			) {
+				Column(modifier = Modifier.padding(20.dp)) {
+					Text(text = channelPrefs, style = MaterialTheme.typography.titleMedium)
+					Text(
+						text = channelPrefsSummary,
 						style = MaterialTheme.typography.bodyMedium,
 						modifier = Modifier.padding(top = 4.dp),
 					)

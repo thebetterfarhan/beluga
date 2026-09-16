@@ -12,6 +12,7 @@ import nl.ndat.tvlauncher.data.resolver.ChannelResolver
 import nl.ndat.tvlauncher.ui.tab.apps.AppsTabViewModel
 import nl.ndat.tvlauncher.ui.tab.home.HomeTabViewModel
 import nl.ndat.tvlauncher.ui.screen.accessibility.AccessibilitySettingsViewModel
+import nl.ndat.tvlauncher.ui.screen.accessibility.ChannelPreferencesViewModel
 import nl.ndat.tvlauncher.ui.screen.accessibility.HiddenAppsViewModel
 import nl.ndat.tvlauncher.ui.screen.accessibility.HomePreferencesViewModel
 import nl.ndat.tvlauncher.ui.screen.launcher.LauncherScreenViewModel
@@ -19,6 +20,7 @@ import nl.ndat.tvlauncher.util.DefaultLauncherHelper
 import nl.ndat.tvlauncher.util.AccessibilityPreferences
 import nl.ndat.tvlauncher.util.HiddenAppsStore
 import nl.ndat.tvlauncher.util.HomePreferences
+import nl.ndat.tvlauncher.util.ChannelPreferences
 import nl.ndat.tvlauncher.util.LastFocusedAppStore
 import nl.ndat.tvlauncher.util.RecentAppsStore
 import nl.ndat.tvlauncher.util.FocusRestorationManager
@@ -40,6 +42,7 @@ private val launcherModule = module {
 	single { RecentAppsStore(context = get()) }
 	single { HiddenAppsStore(context = get()) }
 	single { HomePreferences(context = get()) }
+	single { ChannelPreferences(context = get()) }
 	single { LauncherStateStore(context = get()) }
 	single { LauncherStateRecorder(store = get()) }
 
@@ -49,11 +52,12 @@ private val launcherModule = module {
 	single { ChannelRepository(get(), get(), get()) }
 	single { ChannelResolver() }
 
-	viewModel { HomeTabViewModel(get(), get(), get(), get(), get(), get(), get()) }
+	viewModel { HomeTabViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
 	viewModel { AppsTabViewModel(get(), get(), get()) }
 	viewModel { AccessibilitySettingsViewModel(get()) }
 	viewModel { HiddenAppsViewModel(get(), get()) }
 	viewModel { HomePreferencesViewModel(get()) }
+	viewModel { ChannelPreferencesViewModel(get(), get(), get()) }
 	viewModel { LauncherScreenViewModel(get(), get()) }
 }
 
