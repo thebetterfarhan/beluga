@@ -3,14 +3,18 @@ package nl.ndat.tvlauncher.ui.screen.accessibility
 import android.provider.Settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
@@ -25,11 +29,14 @@ import androidx.compose.ui.semantics.paneTitle
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.tv.material3.Border
 import androidx.tv.material3.Card
+import androidx.tv.material3.CardDefaults
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import nl.ndat.tvlauncher.R
 import nl.ndat.tvlauncher.data.Destinations
+import nl.ndat.tvlauncher.util.AccessibilityPreferences
 import nl.ndat.tvlauncher.util.SystemAccessibilityHelper
 import nl.ndat.tvlauncher.util.composition.LocalBackStack
 import nl.ndat.tvlauncher.util.modifier.debugLauncherLog
@@ -42,7 +49,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 	val backStack = LocalBackStack.current
 	val focusRequester = remember { FocusRequester() }
 	val title = stringResource(R.string.accessibility)
-		val settingName = stringResource(R.string.focus_restoration)
+	val settingName = stringResource(R.string.focus_restoration)
 	val currentValue = stringResource(viewModel.focusRestoreMode.nameRes())
 	val summary = stringResource(R.string.focus_restore_summary)
 	val focusRestoreCurrentValue = stringResource(R.string.focus_restore_current, currentValue)
@@ -54,22 +61,27 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 	val homeLayoutSummary = stringResource(R.string.home_layout_summary)
 	val appLanguage = stringResource(R.string.app_language)
 	val appLanguageSummary = stringResource(R.string.app_language_summary)
-		val channelPrefs = stringResource(R.string.channel_preferences)
-		val channelPrefsSummary = stringResource(R.string.channel_preferences_summary)
-		val systemA11y = stringResource(R.string.system_accessibility_settings)
-		val systemA11ySummary = stringResource(R.string.system_accessibility_settings_summary)
-		val audioDesc = stringResource(R.string.audio_description)
-		val audioDescOn = stringResource(R.string.audio_description_on)
-		val audioDescOff = stringResource(R.string.audio_description_off)
-		val audioDescSummary = stringResource(R.string.audio_description_summary)
-		val highContrast = stringResource(R.string.high_contrast_text)
-		val highContrastOn = stringResource(R.string.high_contrast_text_on)
-		val highContrastOff = stringResource(R.string.high_contrast_text_off)
-		val highContrastSummary = stringResource(R.string.high_contrast_text_summary)
+	val channelPrefs = stringResource(R.string.channel_preferences)
+	val channelPrefsSummary = stringResource(R.string.channel_preferences_summary)
+	val systemA11y = stringResource(R.string.system_accessibility_settings)
+	val systemA11ySummary = stringResource(R.string.system_accessibility_settings_summary)
+	val audioDesc = stringResource(R.string.audio_description)
+	val audioDescOn = stringResource(R.string.audio_description_on)
+	val audioDescOff = stringResource(R.string.audio_description_off)
+	val audioDescSummary = stringResource(R.string.audio_description_summary)
+	val highContrast = stringResource(R.string.high_contrast_text)
+	val highContrastOn = stringResource(R.string.high_contrast_text_on)
+	val highContrastOff = stringResource(R.string.high_contrast_text_off)
+	val highContrastSummary = stringResource(R.string.high_contrast_text_summary)
 		val context = LocalContext.current
+		val a11yPrefs = remember { AccessibilityPreferences(context) }
 		val sysA11yHelper = remember { SystemAccessibilityHelper(context) }
-		val audioDescState = if (sysA11yHelper.isAudioDescriptionRequested) audioDescOn else audioDescOff
-		val highContrastState = if (sysA11yHelper.isHighContrastTextEnabled) highContrastOn else highContrastOff
+	val audioDescState = if (sysA11yHelper.isAudioDescriptionRequested) audioDescOn else audioDescOff
+	val highContrastState = if (sysA11yHelper.isHighContrastTextEnabled) highContrastOn else highContrastOff
+	var onboardingDismissed by remember { mutableStateOf(a11yPrefs.hasSeenOnboarding()) }
+	val onboardingTitle = stringResource(R.string.onboarding_title)
+	val onboardingBody = stringResource(R.string.onboarding_body)
+	val onboardingDismiss = stringResource(R.string.onboarding_dismiss)
 
 	LazyColumn(
 		modifier = modifier
@@ -81,6 +93,19 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 			},
 		verticalArrangement = Arrangement.spacedBy(12.dp),
 	) {
+		if (!onboardingDismissed) {
+			item {
+				OnboardingCard(
+					title = onboardingTitle,
+					body = onboardingBody,
+					dismissLabel = onboardingDismiss,
+					onDismiss = {
+						onboardingDismissed = true
+						a11yPrefs.setHasSeenOnboarding()
+					},
+				)
+			}
+		}
 		item {
 			Text(
 				text = title,
@@ -313,6 +338,60 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 						text = highContrastSummary,
 						style = MaterialTheme.typography.bodyMedium,
 						modifier = Modifier.padding(top = 4.dp),
+					)
+				}
+			}
+		}
+	}
+}
+
+@Composable
+private fun OnboardingCard(
+	title: String,
+	body: String,
+	dismissLabel: String,
+	onDismiss: () -> Unit,
+) {
+	val cardDesc = "$title. $body. $dismissLabel"
+	Card(
+		onClick = onDismiss,
+		modifier = Modifier
+			.fillMaxWidth()
+			.semantics(mergeDescendants = true) {
+				contentDescription = cardDesc
+				role = Role.Button
+			},
+		border = CardDefaults.border(
+			focusedBorder = Border(
+				border = androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+			)
+		),
+	) {
+		Column(modifier = Modifier.padding(20.dp).clearAndSetSemantics { }) {
+			Text(
+				text = title,
+				style = MaterialTheme.typography.titleMedium,
+			)
+			Text(
+				text = body,
+				style = MaterialTheme.typography.bodyMedium,
+				modifier = Modifier.padding(top = 8.dp),
+			)
+			Row(
+				modifier = Modifier.padding(top = 12.dp),
+				horizontalArrangement = Arrangement.End,
+			) {
+				Card(
+					onClick = onDismiss,
+					modifier = Modifier.semantics {
+						contentDescription = dismissLabel
+						role = Role.Button
+					},
+				) {
+					Text(
+						text = dismissLabel,
+						style = MaterialTheme.typography.labelLarge,
+						modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
 					)
 				}
 			}

@@ -20,4 +20,7 @@ class AccessibilityPreferences(private val store: PreferenceStore) : FocusRestor
 	}
 
 	fun setFocusRestoreMode(mode: FocusRestoreMode) = store.setString("focus_restore_mode", mode.name)
+
+	fun hasSeenOnboarding(): Boolean = store.getBoolean("has_seen_onboarding", false)
+	fun setHasSeenOnboarding() = store.setBoolean("has_seen_onboarding", true)
 }

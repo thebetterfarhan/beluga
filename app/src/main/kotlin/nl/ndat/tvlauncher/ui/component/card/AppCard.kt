@@ -1,11 +1,13 @@
 package nl.ndat.tvlauncher.ui.component.card
 
 import android.content.Intent
+import android.os.Build
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -23,17 +25,18 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onLongClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+
 import androidx.tv.material3.Border
 import androidx.tv.material3.Card
 import androidx.tv.material3.CardDefaults
@@ -104,7 +107,6 @@ fun AppCard(
 							fontWeight = FontWeight.SemiBold
 						),
 						modifier = Modifier
-							// The Card below is the single actionable accessibility node.
 							.clearAndSetSemantics { }
 							.ifElse(
 								focused,
@@ -124,7 +126,7 @@ fun AppCard(
 							.focusRequester(cardFocusRequester)
 							.onFocusChanged { if (it.isFocused) debugTrace("focus-write:app-${app.id}") { onFocused?.invoke() } }
 							.debugFocusLog("app-card:${app.id}")
-						.semantics {
+							.semantics {
 								contentDescription = app.displayName
 								role = Role.Button
 								if (popupContent != null) {
@@ -141,7 +143,7 @@ fun AppCard(
 							)
 						),
 						scale = CardDefaults.scale(focusedScale = 1f),
-onClick = {
+						onClick = {
 							val launchUri = launchIntentUri
 							if (launchUri != null) {
 								try {
@@ -161,9 +163,6 @@ onClick = {
 							AsyncImage(
 								modifier = Modifier.fillMaxSize(),
 								model = image,
-								// The card title supplies this tile's single accessible name.
-								// Describing the decorative artwork as well makes TalkBack
-								// announce the app twice for one focused card.
 								contentDescription = null,
 							)
 						}
@@ -176,7 +175,6 @@ onClick = {
 		}
 	)
 
-	// Wait until the Popup window is gone before restoring the invoking tile.
 	LaunchedEffect(restoreFocusAfterMenuDismissal) {
 		if (restoreFocusAfterMenuDismissal) {
 			debugFocusRequestLog("app-card:${app.id}:popup-dismiss")

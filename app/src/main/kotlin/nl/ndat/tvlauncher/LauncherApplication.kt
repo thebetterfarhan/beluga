@@ -34,17 +34,17 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import timber.log.Timber
 
-private val launcherModule = module {
-	single { DefaultLauncherHelper(get()) }
-	single { AccessibilityPreferences(context = get()) }
-	single { FocusRestorationManager(preferences = get()) }
-	single { LastFocusedAppStore(context = get()) }
-	single { RecentAppsStore(context = get()) }
-	single { HiddenAppsStore(context = get()) }
-	single { HomePreferences(context = get()) }
-	single { ChannelPreferences(context = get()) }
-	single { LauncherStateStore(context = get()) }
-	single { LauncherStateRecorder(store = get()) }
+	private val launcherModule = module {
+		single { DefaultLauncherHelper(get()) }
+		single { AccessibilityPreferences(context = get()) }
+		single { FocusRestorationManager(preferences = get()) }
+		single { LastFocusedAppStore(context = get()) }
+		single { RecentAppsStore(context = get()) }
+		single { HiddenAppsStore(context = get()) }
+		single { HomePreferences(context = get()) }
+		single { ChannelPreferences(context = get()) }
+		single { LauncherStateStore(context = get()) }
+		single { LauncherStateRecorder(store = get()) }
 
 	single { AppRepository(get(), get(), get()) }
 	single { AppResolver() }

@@ -61,6 +61,7 @@
 	<string name="search_no_results">No apps found</string>
 	<string name="announce_home_tab">Home tab. Continue, Recent, Favorites, Watch Next.</string>
 	<string name="announce_apps_tab">All apps. Search installed apps.</string>
+	<string name="announce_app_launched">Opened %1$s</string>
 	<string name="home_preferences">Home layout</string>
 	<string name="home_preferences_summary">Choose which rows appear on the Home screen.</string>
 	<string name="home_layout">Home layout</string>
@@ -90,6 +91,12 @@
 	<string name="high_contrast_text_on">On</string>
 	<string name="high_contrast_text_off">Off</string>
 	<string name="high_contrast_text_summary">Increases text contrast for better visibility.</string>
+	<string name="power_controls">Power</string>
+	<string name="power_settings">Device Settings</string>
+	<string name="power_settings_desc">Open the device settings.</string>
+	<string name="onboarding_title">Welcome to Balooga</string>
+	<string name="onboarding_body">This launcher is designed for accessibility. Press D-pad to move focus. Press Center to activate. Long-press Center on any app to open options. Press Back to go back and recover your previous position.</string>
+	<string name="onboarding_dismiss">Got it</string>
 	<string name="home_remap">Home button remap</string>
 	<string name="home_remap_enabled">On</string>
 	<string name="home_remap_disabled">Off</string>

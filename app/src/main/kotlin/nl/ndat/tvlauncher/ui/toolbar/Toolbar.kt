@@ -13,9 +13,6 @@ import androidx.compose.ui.unit.dp
 fun Toolbar(
 	modifier: Modifier = Modifier,
 ) {
-	// No toolbar-level focusRestorer: the tab row owns its own restore scope, and
-	// an outer scope used to land Back-from-Apps focus on the Settings icon
-	// because that was the most-recent focused descendant overall.
 	Row(
 		modifier = modifier.fillMaxWidth(),
 		horizontalArrangement = Arrangement.spacedBy(10.dp),
