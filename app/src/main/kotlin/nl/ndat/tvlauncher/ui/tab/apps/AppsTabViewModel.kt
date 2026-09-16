@@ -55,8 +55,7 @@ class AppsTabViewModel(
 	fun isHidden(appId: String): Boolean = appId in hiddenIds.value
 
 	fun hideApp(appId: String) {
-		hiddenAppsStore.hide(appId)
-		hiddenIds.value = hiddenAppsStore.get()
+		hiddenIds.value = hiddenAppsStore.hide(appId)
 	}
 
 	fun rememberFocusedApp(appId: String) = launcherStateRecorder.recordFocusedItem(appId)

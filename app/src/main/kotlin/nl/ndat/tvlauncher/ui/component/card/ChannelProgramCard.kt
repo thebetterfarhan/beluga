@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -52,7 +53,9 @@ fun ChannelProgramCard(
 	baseHeight: Dp = 100.dp,
 ) {
 	val context = LocalContext.current
-	val programLabel = debugTrace("compose:program-label-${program.id}") { program.accessibleLabel() }
+	val programLabel = remember(program.id) {
+		debugTrace("compose:program-label-${program.id}") { program.accessibleLabel() }
+	}
 
 	Card(
 		modifier = modifier

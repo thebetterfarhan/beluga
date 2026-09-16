@@ -32,8 +32,7 @@ class HiddenAppsViewModel(
 	}
 
 	fun unhide(appId: String) {
-		hiddenAppsStore.unhide(appId)
-		_hiddenAppIds.value = hiddenAppsStore.get()
+		_hiddenAppIds.value = hiddenAppsStore.unhide(appId)
 		_hiddenApps.value = _hiddenApps.value.filterNot { it.id == appId }
 	}
 
