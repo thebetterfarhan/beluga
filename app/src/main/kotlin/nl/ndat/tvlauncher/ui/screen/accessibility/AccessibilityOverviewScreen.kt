@@ -31,7 +31,7 @@ import androidx.tv.material3.Text
 import nl.ndat.tvlauncher.R
 import nl.ndat.tvlauncher.data.Destinations
 import nl.ndat.tvlauncher.util.AccessibilityServicesHelper
-import nl.ndat.tvlauncher.util.GoogleTvLauncherHelper
+import nl.ndat.tvlauncher.util.DefaultLauncherHelper
 import nl.ndat.tvlauncher.util.composition.LocalBackStack
 import nl.ndat.tvlauncher.util.modifier.debugLauncherLog
 import org.koin.androidx.compose.koinViewModel
@@ -231,33 +231,30 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 			}
 		}
 		item {
-			val googleTvHelper = remember(context) { GoogleTvLauncherHelper(context) }
-			val isInstalled = remember { googleTvHelper.isInstalled }
-			val isDisabled = remember { googleTvHelper.isDisabledByUser() }
-			val resolvesAsHome = remember { googleTvHelper.resolvesAsHome() }
-			val googleTvLauncher = stringResource(R.string.google_tv_launcher)
-			val googleTvState = when {
-				!isInstalled -> return@item
-				isDisabled -> stringResource(R.string.google_tv_launcher_state_disabled)
-				resolvesAsHome -> stringResource(R.string.google_tv_launcher_state_owns_home)
-				else -> stringResource(R.string.google_tv_launcher_state_enabled)
+			val defaultLauncherHelper = remember(context) { DefaultLauncherHelper(context) }
+			val isDefaultLauncher = remember { defaultLauncherHelper.isDefaultLauncher() }
+			val setAsDefaultLauncher = stringResource(R.string.set_as_default_launcher)
+			val defaultLauncherState = if (isDefaultLauncher) {
+				stringResource(R.string.set_as_default_launcher_enabled)
+			} else {
+				stringResource(R.string.set_as_default_launcher_disabled)
 			}
-			val googleTvSummary = when {
-				!isInstalled -> return@item
-				isDisabled -> ""
-			 resolvesAsHome -> stringResource(R.string.google_tv_launcher_owns_home_summary)
-				else -> stringResource(R.string.google_tv_launcher_summary)
+			val instructions = stringResource(R.string.set_as_default_launcher_instructions)
+			val cardDesc = if (isDefaultLauncher) {
+				"$setAsDefaultLauncher. $defaultLauncherState."
+			} else {
+				"$setAsDefaultLauncher. $defaultLauncherState. $instructions"
 			}
-			val cardDesc = if (googleTvSummary.isNotEmpty()) "$googleTvLauncher. $googleTvState. $googleTvSummary" else "$googleTvLauncher. $googleTvState"
 			Card(
 				onClick = {
-					debugLauncherLog("google-tv-launcher: disabled=$isDisabled resolvesHome=$resolvesAsHome")
-					context.startActivity(googleTvHelper.appDetailsIntent())
+					debugLauncherLog("set-as-default: isDefault=$isDefaultLauncher")
+					val intent = android.content.Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS)
+					context.startActivity(intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK))
 				},
 				modifier = Modifier
 					.fillMaxWidth()
 					.onFocusChanged {
-						debugLauncherLog("google-tv-launcher: focused=${it.isFocused} hasFocus=${it.hasFocus}")
+						debugLauncherLog("set-as-default: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
 					.semantics(mergeDescendants = true) {
 						contentDescription = cardDesc
@@ -265,15 +262,15 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					},
 			) {
 				Column(modifier = Modifier.padding(20.dp).clearAndSetSemantics { }) {
-					Text(text = googleTvLauncher, style = MaterialTheme.typography.titleMedium)
+					Text(text = setAsDefaultLauncher, style = MaterialTheme.typography.titleMedium)
 					Text(
-						text = googleTvState,
+						text = defaultLauncherState,
 						style = MaterialTheme.typography.bodyMedium,
 						modifier = Modifier.padding(top = 4.dp),
 					)
-					if (googleTvSummary.isNotEmpty()) {
+					if (!isDefaultLauncher) {
 						Text(
-							text = googleTvSummary,
+							text = instructions,
 							style = MaterialTheme.typography.bodyMedium,
 							modifier = Modifier.padding(top = 4.dp),
 						)

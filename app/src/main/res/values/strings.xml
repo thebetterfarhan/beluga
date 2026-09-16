@@ -30,12 +30,10 @@
 	<string name="google_tv_launcher_summary">Open system app settings to disable or enable the Google TV launcher.</string>
 	<string name="google_tv_launcher_state_owns_home">Enabled and it owns the Home key</string>
 	<string name="google_tv_launcher_owns_home_summary">This launcher lost the Home key and the system settings page cannot disable the Google TV launcher again. Connect the device to adb and run: adb shell pm disable-user --user 0 com.google.android.apps.tv.launcherx.</string>
-	<string name="set_as_default_launcher">Default launcher</string>
-	<string name="set_as_default_launcher_summary">Set Balooga as the default home app so the Home button opens it.</string>
-	<string name="set_as_default_launcher_summary_talkback_on">TalkBack is on. Set Balooga as default to get Home button priority.</string>
-	<string name="default_launcher_active">Active</string>
-	<string name="default_launcher_not_active">Not active</string>
-	<string name="default_launcher_active_summary">Balooga is your default launcher.</string>
+	<string name="set_as_default_launcher">Set as default launcher</string>
+	<string name="set_as_default_launcher_enabled">Active</string>
+	<string name="set_as_default_launcher_disabled">Not active</string>
+	<string name="set_as_default_launcher_instructions">Press DOWN repeatedly to find Balooga. Press Center to enable. After enabling, if Home still opens Google TV Launcher, return here and enable the Home button remap service below.</string>
 	<string name="channel_watch_next">Watch Next</string>
 	<string name="channel_preview">%1$s: %2$s</string>
 	<string name="tab_home">Home</string>
@@ -86,5 +84,5 @@
 	<string name="home_remap_enabled">On</string>
 	<string name="home_remap_disabled">Off</string>
 	<string name="home_remap_summary_enabled">Home button opens Balooga.</string>
-	<string name="home_remap_summary_disabled">Enable to make the Home button open Balooga instead of Google TV Launcher.</string>
+	<string name="home_remap_summary_disabled">Enable this service so the Home button opens Balooga instead of Google TV Launcher. Turn TalkBack off first in Settings.</string>
 </resources>
