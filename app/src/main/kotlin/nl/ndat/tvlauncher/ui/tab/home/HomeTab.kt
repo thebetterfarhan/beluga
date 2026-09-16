@@ -49,6 +49,9 @@ fun HomeTab(
 	val watchNextPrograms by viewModel.watchNextPrograms.collectAsState()
 	val recentAppIds by viewModel.recentAppIds.collectAsState()
 	val lastFocusedAppId by viewModel.lastFocusedAppId.collectAsState()
+	val showContinue by viewModel.showContinue.collectAsState()
+	val showRecent by viewModel.showRecent.collectAsState()
+	val showWatchNext by viewModel.showWatchNext.collectAsState()
 	val listState = rememberLazyListState(viewModel.homeScrollIndex())
 
 	LaunchedEffect(listState.firstVisibleItemIndex) {
@@ -80,12 +83,12 @@ fun HomeTab(
 	}
 	var homeAnnouncement by remember { mutableStateOf<String?>(null) }
 	val announceHomeDefault = stringResource(R.string.announce_home_tab)
-	LaunchedEffect(resumeCount, continueApp, recentApps, favorites, anyChannels, announceHomeDefault) {
+	LaunchedEffect(resumeCount, continueApp, recentApps, favorites, anyChannels, showContinue, showRecent, showWatchNext, announceHomeDefault) {
 		val sections = buildList {
-			if (continueApp != null) add("Continue")
-			if (recentApps.isNotEmpty()) add("Recent")
+			if (continueApp != null && showContinue) add("Continue")
+			if (recentApps.isNotEmpty() && showRecent) add("Recent")
 			if (favorites.isNotEmpty()) add("Favorites")
-			if (anyChannels) add("Watch Next")
+			if (anyChannels && showWatchNext) add("Watch Next")
 		}
 		homeAnnouncement = if (sections.isEmpty()) {
 			announceHomeDefault
@@ -101,7 +104,7 @@ fun HomeTab(
 			.focusRestorer()
 			.fillMaxSize()
 	) {
-		if (continueApp != null) {
+		if (continueApp != null && showContinue) {
 			item(key = "continue-${continueApp.id}") {
 				HeadingText(R.string.home_continue)
 				AppCardRow(
@@ -112,7 +115,7 @@ fun HomeTab(
 			}
 		}
 
-		if (recentApps.isNotEmpty()) {
+		if (recentApps.isNotEmpty() && showRecent) {
 			item(key = "recent") {
 				HeadingText(R.string.home_recent)
 				AppCardRow(
@@ -133,7 +136,7 @@ fun HomeTab(
 			}
 		}
 
-		if (anyChannels) {
+		if (anyChannels && showWatchNext) {
 			if (watchNextPrograms.isNotEmpty()) {
 				item(
 					key = ChannelResolver.CHANNEL_ID_WATCH_NEXT

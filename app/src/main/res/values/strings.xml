@@ -56,4 +56,16 @@
 	<string name="search_no_results">No apps found</string>
 	<string name="announce_home_tab">Home tab. Continue, Recent, Favorites, Watch Next.</string>
 	<string name="announce_apps_tab">All apps. Search installed apps.</string>
+	<string name="home_preferences">Home layout</string>
+	<string name="home_preferences_summary">Choose which rows appear on the Home screen.</string>
+	<string name="home_layout">Home layout</string>
+	<string name="home_layout_summary">Show or hide rows on the Home screen.</string>
+	<string name="home_preferences_continue">Continue row</string>
+	<string name="home_preferences_continue_desc">Show the last app you were using.</string>
+	<string name="home_preferences_recent">Recent row</string>
+	<string name="home_preferences_recent_desc">Show recently opened apps.</string>
+	<string name="home_preferences_watch_next">Watch Next and channels</string>
+	<string name="home_preferences_watch_next_desc">Show TV program recommendations and channel guides.</string>
+	<string name="enabled">On</string>
+	<string name="disabled">Off</string>
 </resources>

@@ -17,6 +17,7 @@ import nl.ndat.tvlauncher.util.LauncherStateRecorder
 import nl.ndat.tvlauncher.util.LauncherStateScrollPositions
 import nl.ndat.tvlauncher.util.FocusRestorationManager
 import nl.ndat.tvlauncher.util.RecentAppsStore
+import nl.ndat.tvlauncher.util.HomePreferences
 
 class HomeTabViewModel(
 	private val appRepository: AppRepository,
@@ -25,6 +26,7 @@ class HomeTabViewModel(
 	private val recentAppsStore: RecentAppsStore,
 	private val focusRestorationManager: FocusRestorationManager,
 	private val launcherStateRecorder: LauncherStateRecorder,
+	private val homePreferences: HomePreferences,
 ) : ViewModel() {
 	val lastFocusedAppId = lastFocusedAppStore.id
 	fun preferredFavoriteIndex(apps: List<App>) =
@@ -79,4 +81,8 @@ class HomeTabViewModel(
 			recentAppIdsFlow.value = recentAppsStore.get()
 		}
 	}
+
+	val showContinue = MutableStateFlow(homePreferences.showContinue())
+	val showRecent = MutableStateFlow(homePreferences.showRecent())
+	val showWatchNext = MutableStateFlow(homePreferences.showWatchNext())
 }

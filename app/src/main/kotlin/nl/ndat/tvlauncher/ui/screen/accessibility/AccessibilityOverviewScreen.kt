@@ -59,6 +59,8 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 	val googleTvLauncherSummary = stringResource(R.string.google_tv_launcher_summary)
 	val hiddenApps = stringResource(R.string.hidden_apps)
 	val hiddenAppsSummary = stringResource(R.string.hidden_apps_summary)
+	val homeLayout = stringResource(R.string.home_layout)
+	val homeLayoutSummary = stringResource(R.string.home_layout_summary)
 	val context = LocalContext.current
 
 	// Stock launcher state changes only on the App-Info page; refresh on RESUMED.
@@ -165,6 +167,29 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					Text(text = hiddenApps, style = MaterialTheme.typography.titleMedium)
 					Text(
 						text = hiddenAppsSummary,
+						style = MaterialTheme.typography.bodyMedium,
+						modifier = Modifier.padding(top = 4.dp),
+					)
+				}
+			}
+		}
+		item {
+			Card(
+				onClick = { backStack.add(Destinations.HomePreferences) },
+				modifier = Modifier
+					.fillMaxWidth()
+					.onFocusChanged {
+						debugLauncherLog("home-layout: focused=${it.isFocused} hasFocus=${it.hasFocus}")
+					}
+					.semantics(mergeDescendants = true) {
+						contentDescription = "$homeLayout. $homeLayoutSummary"
+						role = Role.Button
+					},
+			) {
+				Column(modifier = Modifier.padding(20.dp)) {
+					Text(text = homeLayout, style = MaterialTheme.typography.titleMedium)
+					Text(
+						text = homeLayoutSummary,
 						style = MaterialTheme.typography.bodyMedium,
 						modifier = Modifier.padding(top = 4.dp),
 					)
