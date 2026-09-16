@@ -43,4 +43,10 @@
 	<string name="remove_from_favorites">Remove from favorites</string>
 	<string name="move_app_left">Move app left</string>
 	<string name="move_app_right">Move app right</string>
+	<string name="search_apps">Search apps</string>
+	<string name="search_apps_placeholder">Search apps</string>
+	<string name="search_clear">Clear search</string>
+	<string name="search_result_count">%1$d apps</string>
+	<string name="search_result_count_singular">1 app</string>
+	<string name="search_no_results">No apps found</string>
 </resources>
