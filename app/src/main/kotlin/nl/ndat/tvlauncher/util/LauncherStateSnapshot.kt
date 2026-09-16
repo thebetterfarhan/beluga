@@ -26,4 +26,5 @@ enum class SavedDestination {
 	ORIENTATION_HELP,
 	HIDDEN_APPS,
 	HOME_PREFERENCES,
+	APP_LANGUAGE,
 }

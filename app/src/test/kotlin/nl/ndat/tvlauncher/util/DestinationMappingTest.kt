@@ -17,6 +17,7 @@ class DestinationMappingTest {
 			Destinations.OrientationHelp to SavedDestination.ORIENTATION_HELP,
 			Destinations.HiddenApps to SavedDestination.HIDDEN_APPS,
 			Destinations.HomePreferences to SavedDestination.HOME_PREFERENCES,
+			Destinations.AppLanguage to SavedDestination.APP_LANGUAGE,
 		)
 
 		pairs.forEach { (destination, saved) ->
@@ -34,5 +35,6 @@ class DestinationMappingTest {
 		assertFalse(SavedDestination.ORIENTATION_HELP.isTabDestination())
 		assertFalse(SavedDestination.HIDDEN_APPS.isTabDestination())
 		assertFalse(SavedDestination.HOME_PREFERENCES.isTabDestination())
+		assertFalse(SavedDestination.APP_LANGUAGE.isTabDestination())
 	}
 }

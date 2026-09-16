@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import nl.ndat.tvlauncher.ui.tab.apps.AppsTab
 import nl.ndat.tvlauncher.ui.tab.home.HomeTab
 import nl.ndat.tvlauncher.ui.screen.accessibility.AccessibilityOverviewScreen
+import nl.ndat.tvlauncher.ui.screen.accessibility.AppLanguageScreen
 import nl.ndat.tvlauncher.ui.screen.accessibility.FocusRestorationScreen
 import nl.ndat.tvlauncher.ui.screen.accessibility.HiddenAppsScreen
 import nl.ndat.tvlauncher.ui.screen.accessibility.HomePreferencesScreen
@@ -56,6 +57,12 @@ object Destinations {
 	object HomePreferences : Destination {
 		@Composable
 		override fun Content() = HomePreferencesScreen()
+	}
+
+	@Serializable
+	object AppLanguage : Destination {
+		@Composable
+		override fun Content() = AppLanguageScreen()
 	}
 }
 

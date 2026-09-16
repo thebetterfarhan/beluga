@@ -59,6 +59,8 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 	val hiddenAppsSummary = stringResource(R.string.hidden_apps_summary)
 	val homeLayout = stringResource(R.string.home_layout)
 	val homeLayoutSummary = stringResource(R.string.home_layout_summary)
+	val appLanguage = stringResource(R.string.app_language)
+	val appLanguageSummary = stringResource(R.string.app_language_summary)
 	val context = LocalContext.current
 
 	// Stock launcher state changes only on the App-Info page; refresh on RESUMED.
@@ -180,6 +182,29 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					Text(text = homeLayout, style = MaterialTheme.typography.titleMedium)
 					Text(
 						text = homeLayoutSummary,
+						style = MaterialTheme.typography.bodyMedium,
+						modifier = Modifier.padding(top = 4.dp),
+					)
+				}
+			}
+		}
+		item {
+			Card(
+				onClick = { backStack.add(Destinations.AppLanguage) },
+				modifier = Modifier
+					.fillMaxWidth()
+					.onFocusChanged {
+						debugLauncherLog("app-language: focused=${it.isFocused} hasFocus=${it.hasFocus}")
+					}
+					.semantics(mergeDescendants = true) {
+						contentDescription = "$appLanguage. $appLanguageSummary"
+						role = Role.Button
+					},
+			) {
+				Column(modifier = Modifier.padding(20.dp)) {
+					Text(text = appLanguage, style = MaterialTheme.typography.titleMedium)
+					Text(
+						text = appLanguageSummary,
 						style = MaterialTheme.typography.bodyMedium,
 						modifier = Modifier.padding(top = 4.dp),
 					)

@@ -68,4 +68,8 @@
 	<string name="home_preferences_watch_next_desc">Show TV program recommendations and channel guides.</string>
 	<string name="enabled">On</string>
 	<string name="disabled">Off</string>
+	<string name="app_language">App language</string>
+	<string name="app_language_summary">Choose your preferred language for apps on this device. This opens the system language settings.</string>
+	<string name="app_language_system_settings">Open system language settings</string>
+	<string name="app_language_system_settings_desc">Configure per-app language in the system settings.</string>
 </resources>
