@@ -30,7 +30,7 @@ class InputRepository(
 	private suspend fun commitInput(input: Input) = withContext(Dispatchers.IO) {
 		database.inputs.upsert(
 			id = input.id,
-			inputId = input.id,
+			inputId = input.inputId,
 			displayName = input.displayName,
 			packageName = input.packageName,
 			type = input.type,

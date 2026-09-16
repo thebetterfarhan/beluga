@@ -21,31 +21,29 @@ class AppResolver {
 	fun getApplication(context: Context, packageId: String): App? {
 		val packageManager = context.packageManager
 
-		return launcherCategories
-			.map { category ->
-				val intent = Intent(Intent.ACTION_MAIN, null)
-					.addCategory(category)
-					.setPackage(packageId)
-				packageManager.queryIntentActivities(intent)
-			}
-			.flatten()
-			.distinctBy { it.activityInfo.packageName }
-			.map { it.toApp(packageManager) }
-			.firstOrNull()
+		return getLaunchableActivities(packageManager, packageId).firstOrNull()?.toApp(packageManager)
 	}
 
 	fun getApplications(context: Context): List<App> {
 		val packageManager = context.packageManager
 
-		return launcherCategories
-			.map { category ->
-				val intent = Intent(Intent.ACTION_MAIN, null).addCategory(category)
-				packageManager.queryIntentActivities(intent)
-			}
-			.flatten()
-			.distinctBy { it.activityInfo.packageName }
+		return getLaunchableActivities(packageManager)
 			.map { it.toApp(packageManager) }
 	}
+
+	private fun getLaunchableActivities(
+		packageManager: PackageManager,
+		packageId: String? = null,
+	): List<ResolveInfo> = launcherCategories
+		.flatMap { category ->
+			val intent = Intent(Intent.ACTION_MAIN, null)
+				.addCategory(category)
+				.apply { if (packageId != null) setPackage(packageId) }
+			packageManager.queryIntentActivities(intent)
+		}
+		// Leanback entries are queried first. Keep their actual activity rather
+		// than replacing it with the package's generic launch intent.
+		.distinctBy { it.activityInfo.packageName }
 
 	private fun PackageManager.queryIntentActivities(intent: Intent) = when {
 		Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
@@ -61,8 +59,11 @@ class AppResolver {
 		displayName = activityInfo.loadLabel(packageManager).toString(),
 		packageName = activityInfo.packageName,
 
-		launchIntentUriDefault = packageManager.getLaunchIntentForPackage(activityInfo.packageName)?.toUri(0),
-		launchIntentUriLeanback = packageManager.getLeanbackLaunchIntentForPackage(activityInfo.packageName)?.toUri(0),
+		launchIntentUriDefault = Intent(Intent.ACTION_MAIN)
+			.setClassName(activityInfo.packageName, activityInfo.name)
+			.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+			.toUri(0),
+		launchIntentUriLeanback = null,
 
 		favoriteOrder = null,
 	)

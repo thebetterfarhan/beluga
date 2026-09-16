@@ -7,13 +7,18 @@ import coil.util.DebugLogger
 import nl.ndat.tvlauncher.data.DatabaseContainer
 import nl.ndat.tvlauncher.data.repository.AppRepository
 import nl.ndat.tvlauncher.data.repository.ChannelRepository
-import nl.ndat.tvlauncher.data.repository.InputRepository
 import nl.ndat.tvlauncher.data.resolver.AppResolver
 import nl.ndat.tvlauncher.data.resolver.ChannelResolver
-import nl.ndat.tvlauncher.data.resolver.InputResolver
 import nl.ndat.tvlauncher.ui.tab.apps.AppsTabViewModel
 import nl.ndat.tvlauncher.ui.tab.home.HomeTabViewModel
+import nl.ndat.tvlauncher.ui.screen.accessibility.AccessibilitySettingsViewModel
+import nl.ndat.tvlauncher.ui.screen.launcher.LauncherScreenViewModel
 import nl.ndat.tvlauncher.util.DefaultLauncherHelper
+import nl.ndat.tvlauncher.util.AccessibilityPreferences
+import nl.ndat.tvlauncher.util.LastFocusedAppStore
+import nl.ndat.tvlauncher.util.FocusRestorationManager
+import nl.ndat.tvlauncher.util.LauncherStateStore
+import nl.ndat.tvlauncher.util.LauncherStateRecorder
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -24,6 +29,11 @@ import timber.log.Timber
 
 private val launcherModule = module {
 	single { DefaultLauncherHelper(get()) }
+	single { AccessibilityPreferences(context = get()) }
+	single { FocusRestorationManager(preferences = get()) }
+	single { LastFocusedAppStore(context = get()) }
+	single { LauncherStateStore(context = get()) }
+	single { LauncherStateRecorder(store = get()) }
 
 	single { AppRepository(get(), get(), get()) }
 	single { AppResolver() }
@@ -31,11 +41,10 @@ private val launcherModule = module {
 	single { ChannelRepository(get(), get(), get()) }
 	single { ChannelResolver() }
 
-	single { InputRepository(get(), get(), get()) }
-	single { InputResolver() }
-
-	viewModel { HomeTabViewModel(get(), get()) }
-	viewModel { AppsTabViewModel(get()) }
+	viewModel { HomeTabViewModel(get(), get(), get(), get(), get()) }
+	viewModel { AppsTabViewModel(get(), get()) }
+	viewModel { AccessibilitySettingsViewModel(get()) }
+	viewModel { LauncherScreenViewModel(get(), get()) }
 }
 
 private val databaseModule = module {

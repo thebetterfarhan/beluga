@@ -17,6 +17,7 @@
 		<intent>
 			<action android:name="android.intent.action.MAIN" />
 		</intent>
+		<package android:name="com.google.android.apps.tv.launcherx" />
 	</queries>
 
 	<application
@@ -34,7 +35,7 @@
 			android:exported="true"
 			android:launchMode="singleTask"
 			android:stateNotNeeded="true">
-			<intent-filter>
+			<intent-filter android:priority="50">
 				<action android:name="android.intent.action.MAIN" />
 
 				<category android:name="android.intent.category.LAUNCHER" />

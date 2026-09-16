@@ -17,7 +17,6 @@ The app is currently in an early development stage.
 
     - Clock
     - Settings button
-    - Tv input sources switcher
 
 - Favorite app list
 

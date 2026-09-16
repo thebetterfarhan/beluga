@@ -15,6 +15,13 @@ class AppRepository(
 	private val database: DatabaseContainer,
 ) {
 	private suspend fun commitApps(apps: Collection<App>) = withContext(Dispatchers.IO) {
+		val existingApps = database.apps.getAll().executeAsList()
+		val existingById = existingApps.associateBy { it.id }
+		if (existingApps.size == apps.size && apps.all { app ->
+				existingById[app.id]?.hasSameResolvedContent(app) == true
+			}
+		) return@withContext
+
 		database.transaction {
 			// Remove apps found in database but not in committed list
 			database.apps.getAll()
@@ -29,6 +36,9 @@ class AppRepository(
 	}
 
 	private suspend fun commitApp(app: App) = withContext(Dispatchers.IO) {
+		val existing = database.apps.getById(app.id).executeAsOneOrNull()
+		if (existing?.hasSameResolvedContent(app) == true) return@withContext
+
 		database.apps.upsert(
 			displayName = app.displayName,
 			packageName = app.packageName,
@@ -37,6 +47,13 @@ class AppRepository(
 			id = app.id
 		).await()
 	}
+
+	private fun App.hasSameResolvedContent(other: App) =
+		id == other.id &&
+			displayName == other.displayName &&
+			packageName == other.packageName &&
+			launchIntentUriDefault == other.launchIntentUriDefault &&
+			launchIntentUriLeanback == other.launchIntentUriLeanback
 
 	suspend fun refreshAllApplications() = withContext(Dispatchers.IO) {
 		val apps = appResolver.getApplications(context)

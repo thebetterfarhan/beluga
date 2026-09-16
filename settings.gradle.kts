@@ -3,6 +3,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "tv-launcher"
 
 include(":app")
+include(":baselineprofile")
 
 pluginManagement {
 	repositories {

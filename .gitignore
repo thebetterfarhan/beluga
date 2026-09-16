@@ -3,8 +3,23 @@
 
 .kotlin/
 .gradle/
+/.gradle-user/
+/.gradle-codex/
+/.gradle-codex-*/
+/.android-codex/
 local.properties
 
 build/
 
 java_*.hprof
+
+util/
+trace-temp/
+accessibility/TEST_CHECKLIST.md
+accessibility/CollectChromecastBackEvidence.cmd
+accessibility/CollectChromecastBackEvidence.ps1
+accessibility/back-transition.atrace
+accessibility/card-composition-navigation.atrace
+accessibility/current-row-navigation.atrace
+accessibility/state-ownership-navigation.atrace
+

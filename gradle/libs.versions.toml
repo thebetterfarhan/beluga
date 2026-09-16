@@ -5,6 +5,12 @@ android-plugin = "9.4.0"
 android-targetSdk = "37"
 androidx-activity = "1.13.0"
 androidx-appcompat = "1.8.0"
+androidx-baselineprofile = "1.5.0-alpha02"
+androidx-benchmark-macro = "1.5.0"
+androidx-profileinstaller = "1.4.1"
+androidx-test-ext = "1.3.0"
+androidx-test-runner = "1.7.0"
+androidx-uiautomator = "2.3.0"
 androidx-compose-foundation = "1.12.1"
 androidx-compose-runtime = "1.12.1"
 androidx-compose-ui = "1.12.1"
@@ -23,9 +29,12 @@ kotlin = "2.4.20"
 kotlinx-serialization = "1.11.0"
 sqldelight = "2.3.2"
 timber = "5.0.1"
+junit = "4.13.2"
 
 [plugins]
 android-app = { id = "com.android.application", version.ref = "android-plugin" }
+androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidx-baselineprofile" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
@@ -34,6 +43,11 @@ sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-benchmark-macro-junit4 = { module = "androidx.benchmark:benchmark-macro-junit4", version.ref = "androidx-benchmark-macro" }
+androidx-profileinstaller = { module = "androidx.profileinstaller:profileinstaller", version.ref = "androidx-profileinstaller" }
+androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext" }
+androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test-runner" }
+androidx-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "androidx-uiautomator" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose-foundation" }
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "androidx-compose-runtime" }
 androidx-compose-runtime-savable = { module = "androidx.compose.runtime:runtime-saveable", version.ref = "androidx-compose-runtime" }
@@ -54,6 +68,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 sqldelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+junit = { module = "junit:junit", version.ref = "junit" }
 
 [bundles]
 androidx-compose = [

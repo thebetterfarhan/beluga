@@ -16,6 +16,9 @@ class ChannelRepository(
 	private val database: DatabaseContainer,
 ) {
 	private suspend fun commitChannels(type: ChannelType, channels: Collection<Channel>) = withContext(Dispatchers.IO) {
+		val existingChannels = database.channels.getByType(type).executeAsList()
+		if (existingChannels.associateBy { it.id } == channels.associateBy { it.id }) return@withContext
+
 		database.transaction {
 			// Remove channels found in database but not in committed list
 			database.channels.getByType(type)
@@ -30,6 +33,8 @@ class ChannelRepository(
 	}
 
 	private suspend fun commitChannel(channel: Channel) = withContext(Dispatchers.IO) {
+		if (database.channels.getById(channel.id).executeAsOneOrNull() == channel) return@withContext
+
 		database.channels.upsert(
 			id = channel.id,
 			type = channel.type,
@@ -45,6 +50,9 @@ class ChannelRepository(
 		channelId: String,
 		programs: Collection<ChannelProgram>,
 	) = withContext(Dispatchers.IO) {
+		val existingPrograms = database.channelPrograms.getByChannel(channelId).executeAsList()
+		if (existingPrograms.associateBy { it.id } == programs.associateBy { it.id }) return@withContext
+
 		database.transaction {
 			// Remove channels found in database but not in committed list
 			database.channelPrograms.getByChannel(channelId)
@@ -58,7 +66,35 @@ class ChannelRepository(
 		}
 	}
 
+	private suspend fun commitChannelPrograms(
+		programsByChannel: Collection<Pair<String, Collection<ChannelProgram>>>,
+	) = withContext(Dispatchers.IO) {
+		val changedProgramsByChannel = programsByChannel.filter { (channelId, programs) ->
+			val existingPrograms = database.channelPrograms.getByChannel(channelId).executeAsList()
+			existingPrograms.associateBy { it.id } != programs.associateBy { it.id }
+		}
+		if (changedProgramsByChannel.isEmpty()) return@withContext
+
+		// Commit all program updates in one transaction so the affected queries emit once
+		// instead of once per channel, which reduces recomposition and focus churn on refresh.
+		database.transaction {
+			changedProgramsByChannel.forEach { (channelId, programs) ->
+				// Remove programs found in database but not in committed list
+				database.channelPrograms.getByChannel(channelId)
+					.executeAsList()
+					.map { it.id }
+					.subtract(programs.map { it.id }.toSet())
+					.forEach { id -> database.channelPrograms.removeById(id) }
+
+				// Upsert programs
+				programs.forEach { program -> commitChannelProgram(program) }
+			}
+		}
+	}
+
 	private suspend fun commitChannelProgram(program: ChannelProgram) = withContext(Dispatchers.IO) {
+		if (database.channelPrograms.getById(program.id).executeAsOneOrNull() == program) return@withContext
+
 		database.channelPrograms.upsert(
 			id = program.id,
 			channelId = program.channelId,
@@ -96,7 +132,12 @@ class ChannelRepository(
 		val channels = channelResolver.getPreviewChannels(context)
 		commitChannels(ChannelType.PREVIEW, channels)
 
-		for (channel in channels) refreshChannelPrograms(channel)
+		// Read all programs up front, then commit them inside a single transaction so each
+		// watched channel-program query emits only once for the whole preview refresh.
+		val programsByChannel = channels.map { channel ->
+			channel.id to channelResolver.getChannelPrograms(context, channel.channelId)
+		}
+		commitChannelPrograms(programsByChannel)
 	}
 
 	suspend fun refreshWatchNextChannels() {

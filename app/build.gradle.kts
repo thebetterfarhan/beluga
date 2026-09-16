@@ -3,6 +3,7 @@ plugins {
 	alias(libs.plugins.kotlin.compose)
 	alias(libs.plugins.sqldelight)
 	alias(libs.plugins.kotlin.serialization)
+	alias(libs.plugins.androidx.baselineprofile)
 }
 
 kotlin {
@@ -26,6 +27,23 @@ android {
 		buildConfig = true
 		compose = true
 	}
+
+	buildTypes {
+		// Build type used only by baseline-profile generation: debug-signed but
+		// otherwise release-like, so the generator can install and run it.
+		create("benchmark") {
+			initWith(getByName("debug"))
+			matchingFallbacks += listOf("release")
+		}
+	}
+}
+
+baselineProfile {
+	// Generated profiles are committed in-tree so release builds pick them up
+	// without requiring a device during every build.
+	saveInSrc = true
+	// Keep a single profile in the main source set; the launcher only ships release.
+	mergeIntoMain = true
 }
 
 sqldelight {
@@ -41,6 +59,7 @@ dependencies {
 	// System
 	implementation(libs.bundles.androidx.core)
 	implementation(libs.bundles.koin)
+	implementation(libs.androidx.profileinstaller)
 	implementation(libs.androidx.tvprovider)
 	implementation(libs.timber)
 
@@ -59,4 +78,6 @@ dependencies {
 	implementation(libs.androidx.tv.material)
 	implementation(libs.coil.compose)
 	debugImplementation(libs.androidx.compose.ui.tooling)
+	testImplementation(libs.junit)
+	baselineProfile(project(":baselineprofile"))
 }

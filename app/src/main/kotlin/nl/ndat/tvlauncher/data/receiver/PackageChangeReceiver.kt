@@ -3,8 +3,10 @@ package nl.ndat.tvlauncher.data.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import nl.ndat.tvlauncher.data.repository.AppRepository
 import org.koin.core.component.KoinComponent
@@ -25,8 +27,9 @@ class PackageChangeReceiver : BroadcastReceiver(), KoinComponent {
 	override fun onReceive(context: Context, intent: Intent) {
 		val pendingIntent = goAsync()
 
-		@OptIn(DelicateCoroutinesApi::class)
-		GlobalScope.launch {
+		// Per-receive scope: cancel and discard once the work completes.
+		val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+		scope.launch {
 			try {
 				val packageName = when {
 					intent.action in packageActions && intent.data?.scheme == "package" -> intent.data?.schemeSpecificPart
@@ -35,8 +38,11 @@ class PackageChangeReceiver : BroadcastReceiver(), KoinComponent {
 
 				if (packageName != null) appRepository.refreshApplication(packageName)
 				else appRepository.refreshAllApplications()
+			} catch (err: Throwable) {
+				// Silently swallow receiver errors; the next resume or broadcast will retry.
 			} finally {
 				pendingIntent.finish()
+				scope.cancel()
 			}
 		}
 	}

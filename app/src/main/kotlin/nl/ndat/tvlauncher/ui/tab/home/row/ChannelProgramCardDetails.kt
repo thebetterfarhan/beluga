@@ -7,15 +7,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import nl.ndat.tvlauncher.data.sqldelight.App
 import nl.ndat.tvlauncher.data.sqldelight.ChannelProgram
 
 @Composable
-fun ChannelProgramCardDetails(program: ChannelProgram, app: App?) {
+fun FocusedChannelProgramCardDetails(focusedProgram: State<ChannelProgram?>) {
+	focusedProgram.value?.let { program ->
+		ChannelProgramCardDetails(program)
+	}
+}
+
+@Composable
+private fun ChannelProgramCardDetails(program: ChannelProgram) {
 	Column(
 		modifier = Modifier
 			.padding(horizontal = 48.dp)
@@ -28,6 +36,7 @@ fun ChannelProgramCardDetails(program: ChannelProgram, app: App?) {
 				text = title,
 				style = MaterialTheme.typography.labelLarge,
 				maxLines = 1,
+				modifier = Modifier.clearAndSetSemantics { },
 			)
 		}
 
@@ -36,7 +45,9 @@ fun ChannelProgramCardDetails(program: ChannelProgram, app: App?) {
 				text = description,
 				style = MaterialTheme.typography.labelSmall,
 				maxLines = 3,
-				modifier = Modifier.width(600.dp)
+				modifier = Modifier
+					.width(600.dp)
+					.clearAndSetSemantics { },
 			)
 		}
 	}

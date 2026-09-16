@@ -12,12 +12,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.tvprovider.media.tv.TvContractCompat
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import nl.ndat.tvlauncher.data.repository.AppRepository
 import nl.ndat.tvlauncher.data.repository.ChannelRepository
-import nl.ndat.tvlauncher.data.repository.InputRepository
 import nl.ndat.tvlauncher.ui.AppBase
 import nl.ndat.tvlauncher.util.DefaultLauncherHelper
+import nl.ndat.tvlauncher.util.LauncherStateRecorder
+import nl.ndat.tvlauncher.util.RefreshStalenessTracker
+import nl.ndat.tvlauncher.util.modifier.debugLauncherLog
 import org.koin.android.ext.android.inject
 
 @SuppressLint("RestrictedApi")
@@ -27,8 +30,15 @@ val PERMISSIONS = listOf(PERMISSION_READ_CHANNELS)
 class LauncherActivity : ComponentActivity() {
 	private val defaultLauncherHelper: DefaultLauncherHelper by inject()
 	private val appRepository: AppRepository by inject()
-	private val inputRepository: InputRepository by inject()
 	private val channelRepository: ChannelRepository by inject()
+	private val launcherStateRecorder: LauncherStateRecorder by inject()
+
+	private val appsRefreshStaleness = RefreshStalenessTracker(REFRESH_STALE_MS)
+	private val channelsRefreshStaleness = RefreshStalenessTracker(REFRESH_STALE_MS)
+
+	companion object {
+		private const val REFRESH_STALE_MS = 60_000L
+	}
 
 	private val permissionsLauncher =
 		registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -47,9 +57,34 @@ class LauncherActivity : ComponentActivity() {
 
 		lifecycleScope.launch {
 			repeatOnLifecycle(Lifecycle.State.RESUMED) {
-				appRepository.refreshAllApplications()
-				inputRepository.refreshAllInputs()
-				channelRepository.refreshAllChannels()
+				// Live app changes are already handled by PackageChangeReceiver. Only re-query
+				// when the cached data is stale so a quick return to the launcher does not trigger
+				// a full apps/channels refresh and the resulting recomposition and focus churn.
+				debugLauncherLog("resumed: refresh staleness check")
+				try {
+					val now = SystemClock.elapsedRealtime()
+					val appsStale = appsRefreshStaleness.isStale(now)
+					if (appsStale) {
+						val start = SystemClock.elapsedRealtime()
+						appRepository.refreshAllApplications()
+						appsRefreshStaleness.markSuccessfulRefresh(SystemClock.elapsedRealtime())
+						debugLauncherLog("resumed: apps refreshed in ${SystemClock.elapsedRealtime() - start}ms")
+					}
+
+					val nowChannels = SystemClock.elapsedRealtime()
+					val channelsStale = channelsRefreshStaleness.isStale(nowChannels)
+					if (channelsStale) {
+						val start = SystemClock.elapsedRealtime()
+						channelRepository.refreshAllChannels()
+						channelsRefreshStaleness.markSuccessfulRefresh(SystemClock.elapsedRealtime())
+						debugLauncherLog("resumed: channels refreshed in ${SystemClock.elapsedRealtime() - start}ms")
+					}
+					debugLauncherLog("resumed: refresh appsStale=$appsStale channelsStale=$channelsStale")
+				} catch (err: CancellationException) {
+					throw err
+				} catch (err: Throwable) {
+					debugLauncherLog("resumed: refresh failed: ${err::class.simpleName}: ${err.message ?: "(no message)"}")
+				}
 			}
 		}
 	}
@@ -62,6 +97,13 @@ class LauncherActivity : ComponentActivity() {
 			.filter { permission -> checkCallingOrSelfPermission(permission) != PackageManager.PERMISSION_GRANTED }
 			.toTypedArray()
 		if (missingPermissions.isNotEmpty()) permissionsLauncher.launch(missingPermissions)
+	}
+
+	override fun onStop() {
+		super.onStop()
+
+		// Flush the recorded destination and focused item once per session, not on every focus change.
+		launcherStateRecorder.flush()
 	}
 
 	private fun validateDefaultLauncher() {
