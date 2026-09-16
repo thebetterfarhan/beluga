@@ -13,24 +13,29 @@ import nl.ndat.tvlauncher.BuildConfig
 import nl.ndat.tvlauncher.data.repository.AppRepository
 import nl.ndat.tvlauncher.data.sqldelight.App
 
+import nl.ndat.tvlauncher.util.HiddenAppsStore
 import nl.ndat.tvlauncher.util.LauncherStateRecorder
 import nl.ndat.tvlauncher.util.LauncherStateScrollPositions
 
 class AppsTabViewModel(
 	private val appRepository: AppRepository,
 	private val launcherStateRecorder: LauncherStateRecorder,
+	private val hiddenAppsStore: HiddenAppsStore,
 ) : ViewModel() {
 	private val allApps = appRepository.getApps()
 		// Hide launcher app from showing
 		.map { apps -> apps.filterNot { app -> app.packageName == BuildConfig.APPLICATION_ID } }
 		.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
+	private val hiddenIds = MutableStateFlow(hiddenAppsStore.get())
+
 	private val _searchQuery = MutableStateFlow("")
 	val searchQuery = _searchQuery.asStateFlow()
 
-	val apps = combine(allApps, _searchQuery) { apps, query ->
-		if (query.isBlank()) apps
-		else apps.filter { app ->
+	val apps = combine(allApps, hiddenIds, _searchQuery) { apps, hidden, query ->
+		val visible = apps.filterNot { it.id in hidden }
+		if (query.isBlank()) visible
+		else visible.filter { app ->
 			app.displayName.contains(query, ignoreCase = true) ||
 				app.packageName.contains(query, ignoreCase = true)
 		}
@@ -45,6 +50,13 @@ class AppsTabViewModel(
 
 	fun clearSearch() {
 		_searchQuery.value = ""
+	}
+
+	fun isHidden(appId: String): Boolean = appId in hiddenIds.value
+
+	fun hideApp(appId: String) {
+		hiddenAppsStore.hide(appId)
+		hiddenIds.value = hiddenAppsStore.get()
 	}
 
 	fun rememberFocusedApp(appId: String) = launcherStateRecorder.recordFocusedItem(appId)

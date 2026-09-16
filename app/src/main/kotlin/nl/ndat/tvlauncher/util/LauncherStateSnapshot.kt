@@ -24,4 +24,5 @@ enum class SavedDestination {
 	ACCESSIBILITY,
 	FOCUS_RESTORATION,
 	ORIENTATION_HELP,
+	HIDDEN_APPS,
 }

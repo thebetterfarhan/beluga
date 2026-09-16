@@ -43,6 +43,11 @@
 	<string name="remove_from_favorites">Remove from favorites</string>
 	<string name="move_app_left">Move app left</string>
 	<string name="move_app_right">Move app right</string>
+	<string name="hide_app">Hide app</string>
+	<string name="unhide_app">Unhide app</string>
+	<string name="hidden_apps">Hidden apps</string>
+	<string name="hidden_apps_summary">Apps you have hidden from the All Apps grid. Hidden apps are still installed.</string>
+	<string name="no_hidden_apps">No hidden apps</string>
 	<string name="search_apps">Search apps</string>
 	<string name="search_apps_placeholder">Search apps</string>
 	<string name="search_clear">Clear search</string>

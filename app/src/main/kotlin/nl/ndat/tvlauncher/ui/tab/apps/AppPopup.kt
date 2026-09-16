@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.Composable
@@ -19,7 +20,9 @@ import nl.ndat.tvlauncher.R
 @Composable
 fun AppPopup(
 	isFavorite: Boolean,
+	isHidden: Boolean,
 	onToggleFavorite: (favorite: Boolean) -> Unit,
+	onHide: () -> Unit,
 	firstActionModifier: Modifier = Modifier,
 	onAction: () -> Unit,
 ) {
@@ -35,6 +38,17 @@ fun AppPopup(
 				contentDescription = stringResource(
 					if (isFavorite) R.string.remove_from_favorites else R.string.add_to_favorites
 				),
+				modifier = Modifier.size(IconButtonDefaults.SmallIconSize)
+			)
+		}
+
+		IconButton(
+			modifier = Modifier.size(IconButtonDefaults.SmallButtonSize),
+			onClick = { onAction(); onHide() }
+		) {
+			Icon(
+				imageVector = Icons.Default.Close,
+				contentDescription = stringResource(R.string.hide_app),
 				modifier = Modifier.size(IconButtonDefaults.SmallIconSize)
 			)
 		}

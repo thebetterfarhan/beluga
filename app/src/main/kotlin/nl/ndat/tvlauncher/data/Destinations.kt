@@ -6,6 +6,7 @@ import nl.ndat.tvlauncher.ui.tab.apps.AppsTab
 import nl.ndat.tvlauncher.ui.tab.home.HomeTab
 import nl.ndat.tvlauncher.ui.screen.accessibility.AccessibilityOverviewScreen
 import nl.ndat.tvlauncher.ui.screen.accessibility.FocusRestorationScreen
+import nl.ndat.tvlauncher.ui.screen.accessibility.HiddenAppsScreen
 import nl.ndat.tvlauncher.ui.screen.accessibility.OrientationHelpScreen
 
 interface Destination {
@@ -42,6 +43,12 @@ object Destinations {
 	object OrientationHelp : Destination {
 		@Composable
 		override fun Content() = OrientationHelpScreen()
+	}
+
+	@Serializable
+	object HiddenApps : Destination {
+		@Composable
+		override fun Content() = HiddenAppsScreen()
 	}
 }
 

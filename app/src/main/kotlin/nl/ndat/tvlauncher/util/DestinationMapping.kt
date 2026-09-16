@@ -9,6 +9,7 @@ fun Destination.toSavedDestination(): SavedDestination = when (this) {
 	Destinations.Accessibility -> SavedDestination.ACCESSIBILITY
 	Destinations.FocusRestoration -> SavedDestination.FOCUS_RESTORATION
 	Destinations.OrientationHelp -> SavedDestination.ORIENTATION_HELP
+	Destinations.HiddenApps -> SavedDestination.HIDDEN_APPS
 	else -> SavedDestination.HOME
 }
 
@@ -18,6 +19,7 @@ fun SavedDestination.toDestination(): Destination = when (this) {
 	SavedDestination.ACCESSIBILITY -> Destinations.Accessibility
 	SavedDestination.FOCUS_RESTORATION -> Destinations.FocusRestoration
 	SavedDestination.ORIENTATION_HELP -> Destinations.OrientationHelp
+	SavedDestination.HIDDEN_APPS -> Destinations.HiddenApps
 }
 
 fun SavedDestination.isTabDestination(): Boolean =

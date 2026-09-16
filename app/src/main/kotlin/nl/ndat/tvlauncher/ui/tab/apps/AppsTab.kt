@@ -138,10 +138,12 @@ fun AppsTab(
 						popupContent = { firstActionModifier, onAction ->
 							AppPopup(
 								isFavorite = app.favoriteOrder != null,
+								isHidden = viewModel.isHidden(app.id),
 								firstActionModifier = firstActionModifier,
 								onToggleFavorite = { favorite ->
 									viewModel.favoriteApp(app, favorite)
 								},
+								onHide = { viewModel.hideApp(app.id) },
 								onAction = onAction,
 							)
 						},
