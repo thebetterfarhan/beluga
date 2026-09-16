@@ -1,6 +1,5 @@
 package nl.ndat.tvlauncher.ui.screen.accessibility
 
-import android.provider.Settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,8 +29,6 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import nl.ndat.tvlauncher.R
 import nl.ndat.tvlauncher.data.Destinations
-import nl.ndat.tvlauncher.util.AccessibilityServicesHelper
-import nl.ndat.tvlauncher.util.DefaultLauncherHelper
 import nl.ndat.tvlauncher.util.composition.LocalBackStack
 import nl.ndat.tvlauncher.util.modifier.debugLauncherLog
 import org.koin.androidx.compose.koinViewModel
@@ -75,40 +72,6 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 				style = MaterialTheme.typography.headlineMedium,
 				modifier = Modifier.padding(top = 12.dp).semantics { heading() },
 			)
-		}
-		item {
-			val homeRemapEnabled = remember { AccessibilityServicesHelper.isHomeRemapEnabled(context) }
-			val homeRemap = stringResource(R.string.home_remap)
-			val homeRemapState = if (homeRemapEnabled) stringResource(R.string.home_remap_enabled) else stringResource(R.string.home_remap_disabled)
-			val homeRemapSummary = if (homeRemapEnabled) stringResource(R.string.home_remap_summary_enabled) else stringResource(R.string.home_remap_summary_disabled)
-			val cardDesc = "$homeRemap. $homeRemapState. $homeRemapSummary"
-			Card(
-				onClick = {
-					debugLauncherLog("home-remap: enabled=$homeRemapEnabled")
-					val intent = android.content.Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-					context.startActivity(intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK))
-				},
-				modifier = Modifier
-					.fillMaxWidth()
-					.semantics(mergeDescendants = true) {
-						contentDescription = cardDesc
-						role = Role.Button
-					},
-			) {
-				Column(modifier = Modifier.padding(20.dp).clearAndSetSemantics { }) {
-					Text(text = homeRemap, style = MaterialTheme.typography.titleMedium)
-					Text(
-						text = homeRemapState,
-						style = MaterialTheme.typography.bodyMedium,
-						modifier = Modifier.padding(top = 4.dp),
-					)
-					Text(
-						text = homeRemapSummary,
-						style = MaterialTheme.typography.bodyMedium,
-						modifier = Modifier.padding(top = 4.dp),
-					)
-				}
-			}
 		}
 		item {
 			val cardDesc = "$settingName. $focusRestoreCurrentValue. $summary"
@@ -227,54 +190,6 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 						style = MaterialTheme.typography.bodyMedium,
 						modifier = Modifier.padding(top = 4.dp),
 					)
-				}
-			}
-		}
-		item {
-			val defaultLauncherHelper = remember(context) { DefaultLauncherHelper(context) }
-			val isDefaultLauncher = remember { defaultLauncherHelper.isDefaultLauncher() }
-			val setAsDefaultLauncher = stringResource(R.string.set_as_default_launcher)
-			val defaultLauncherState = if (isDefaultLauncher) {
-				stringResource(R.string.set_as_default_launcher_enabled)
-			} else {
-				stringResource(R.string.set_as_default_launcher_disabled)
-			}
-			val instructions = stringResource(R.string.set_as_default_launcher_instructions)
-			val cardDesc = if (isDefaultLauncher) {
-				"$setAsDefaultLauncher. $defaultLauncherState."
-			} else {
-				"$setAsDefaultLauncher. $defaultLauncherState. $instructions"
-			}
-			Card(
-				onClick = {
-					debugLauncherLog("set-as-default: isDefault=$isDefaultLauncher")
-					val intent = android.content.Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS)
-					context.startActivity(intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK))
-				},
-				modifier = Modifier
-					.fillMaxWidth()
-					.onFocusChanged {
-						debugLauncherLog("set-as-default: focused=${it.isFocused} hasFocus=${it.hasFocus}")
-					}
-					.semantics(mergeDescendants = true) {
-						contentDescription = cardDesc
-						role = Role.Button
-					},
-			) {
-				Column(modifier = Modifier.padding(20.dp).clearAndSetSemantics { }) {
-					Text(text = setAsDefaultLauncher, style = MaterialTheme.typography.titleMedium)
-					Text(
-						text = defaultLauncherState,
-						style = MaterialTheme.typography.bodyMedium,
-						modifier = Modifier.padding(top = 4.dp),
-					)
-					if (!isDefaultLauncher) {
-						Text(
-							text = instructions,
-							style = MaterialTheme.typography.bodyMedium,
-							modifier = Modifier.padding(top = 4.dp),
-						)
-					}
 				}
 			}
 		}
