@@ -19,7 +19,7 @@
 - **Filtering:** `AppsTabViewModel` exposes `searchQuery` StateFlow + `filteredApps` derived flow. Case-insensitive filter on `displayName` and `packageName`. Empty search shows "No apps found" state.
 - **Heading restructure:** "All apps" heading moved OUTSIDE `LazyVerticalGrid`. Previously a full-width `GridItemSpan` grid item (participated in grid focus order); now a standalone `Column` child with `heading()` semantics. `Column` has `paneTitle = "All apps"` for TalkBack pane entry announcement.
 - **New strings:** `search_apps`, `search_apps_placeholder`, `search_clear`, `search_result_count`, `search_result_count_singular`, `search_no_results`.
-- **Verification:** `assembleDebug`/`lintDebug`/`testDebugUnitTest` green. Physical TalkBack validation pending.
+- **Verification:** `assembleDebug`/`lintDebug`/`testDebugUnitTest` green. Physical TalkBack validation completed — search bar, DOWN navigation, clear button, empty state all pass.
 - **Note:** Previously committed Favorites heading fix (`abf9133`) also on this date.
 
 ## 2026-09-16 - Continue + Recent apps feature committed

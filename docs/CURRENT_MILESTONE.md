@@ -55,7 +55,7 @@ Add high-value navigation aids based on validated user needs. The Continue row a
 - [x] Row headings announced once by TalkBack.
 - [x] D-pad navigation through all rows without traps.
 - [x] Physical-remote + TalkBack pass completed with all items passing.
-- [ ] Search bar: TalkBack announces "Search apps" on focus; typing filters the grid; clear button works; D-pad DOWN moves to first result; empty state announced.
+- [x] Search bar: TalkBack announces "Search apps" on focus; typing filters the grid; clear button works; D-pad DOWN moves to first result; empty state announced.
 
 ## Next concrete action
 
