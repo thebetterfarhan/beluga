@@ -107,7 +107,7 @@ class LauncherActivity : ComponentActivity() {
 	}
 
 	private fun validateDefaultLauncher() {
-		if (!defaultLauncherHelper.isDefaultLauncher()) {
+		if (defaultLauncherHelper.shouldPromptDefaultLauncher()) {
 			startActivityForResult(defaultLauncherHelper.requestDefaultLauncherIntent(), 0)
 		}
 	}

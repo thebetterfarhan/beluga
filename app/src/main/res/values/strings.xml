@@ -80,6 +80,16 @@
 	<string name="channel_preferences">Channel order</string>
 	<string name="channel_preferences_summary">Drag channels to reorder them on the Home screen.</string>
 	<string name="no_channels">No channels available</string>
+	<string name="system_accessibility_settings">System accessibility</string>
+	<string name="system_accessibility_settings_summary">Configure screen reader, TalkBack, high-contrast text, switch access, and other accessibility services.</string>
+	<string name="audio_description">Audio descriptions</string>
+	<string name="audio_description_on">On — audio descriptions are enabled for media playback.</string>
+	<string name="audio_description_off">Off — audio descriptions are not enabled.</string>
+	<string name="audio_description_summary">Audio descriptions narrate on-screen action during media playback for users who cannot see the screen.</string>
+	<string name="high_contrast_text">High-contrast text</string>
+	<string name="high_contrast_text_on">On</string>
+	<string name="high_contrast_text_off">Off</string>
+	<string name="high_contrast_text_summary">Increases text contrast for better visibility.</string>
 	<string name="home_remap">Home button remap</string>
 	<string name="home_remap_enabled">On</string>
 	<string name="home_remap_disabled">Off</string>

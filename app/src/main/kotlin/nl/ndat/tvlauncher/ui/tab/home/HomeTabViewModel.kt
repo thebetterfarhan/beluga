@@ -51,10 +51,10 @@ class HomeTabViewModel(
 	val recentAppIds = recentAppIdsFlow.asStateFlow()
 
 	val apps = appRepository.getFavoriteApps()
-		.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+		.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
 	val allApps = appRepository.getApps()
-		.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+		.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
 	val channels = channelRepository.getFavoriteAppChannels()
 		.let { flow ->
@@ -62,10 +62,10 @@ class HomeTabViewModel(
 			if (storedOrder.isEmpty()) flow
 			else flow.map { channelList -> orderChannels(channelList, storedOrder) }
 		}
-		.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+		.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
 	val watchNextPrograms = channelRepository.getWatchNextPrograms()
-		.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+		.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
 	fun channelPrograms(channel: Channel) = channelRepository.getProgramsByChannel(channel)
 
