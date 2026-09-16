@@ -90,9 +90,9 @@ class HomeTabViewModel(
 		}
 	}
 
-		val showContinue = MutableStateFlow(homePreferences.showContinue())
-		val showRecent = MutableStateFlow(homePreferences.showRecent())
-		val showWatchNext = MutableStateFlow(homePreferences.showWatchNext())
+	val showContinue = homePreferences.showContinue
+	val showRecent = homePreferences.showRecent
+	val showWatchNext = homePreferences.showWatchNext
 
 	private fun orderChannels(channels: List<Channel>, storedOrder: List<String>): List<Channel> {
 		val channelMap = channels.associateBy { it.id }

@@ -1,4 +1,4 @@
-# Current Milestone: Blind productivity features
+# Current Milestone: Channel editing, performance, and home remap
 
 **Status:** In progress
 
@@ -92,6 +92,30 @@ Advance Phase 5 → Phase 6 in ROADMAP and begin planning accessible search or o
 - Completed: Committed `3154116` — Hidden apps management feature. `HiddenAppsStore` (SharedPreferences `Set<String>`), hide button on app popup (`Icons.Default.Close`), hidden apps filtered from grid and search, `HiddenAppsScreen` with accessible unhide list in Settings → Accessibility, `HiddenAppsViewModel` with `unhide` and `unhideAll`, full navigation wiring + state persistence.
 - Evidence/checks: `assembleDebug` / unit tests green, installed on device, physical TalkBack pass: hide button announced, app disappears from grid and search, Hidden Apps screen accessible, unhide restores app, persistence across restarts.
 - Next concrete action: Phase 6 remaining backlog item — startup summary.
+
+## Update - 2026-09-16 (Phase 11 complete — channel editing)
+
+- Completed: Committed `02d0508` — Channel editing feature. `ChannelPreferences` (SharedPreferences-backed store), `ChannelPreferencesViewModel` with `moveLeft`/`moveRight`, `ChannelPreferencesScreen` with LazyColumn and ◀/▶ buttons (TalkBack `Role.Button` semantics). Channel order persisted via `PreferenceStore.getStringSet/setStringSet`. Home screen shows channels in user-defined order via `orderChannels()` helper. Accessible from Settings → Accessibility → Channel order.
+- Evidence/checks: `assembleDebug` / unit tests green, installed on device.
+- Next concrete action: Phase 12 — performance optimization.
+
+## Update - 2026-09-16 (Phase 12 complete — performance optimizations)
+
+- Completed: Committed `66fe39a` — Performance optimizations. `HiddenAppsStore` memoization: cached parsed `Set<String>` avoids repeated `split()` on every `get()`/`isHidden()` call. `hide/unhide/unhideAll` return the updated set to avoid double-read. `AppsTabViewModel` and `HiddenAppsViewModel` use returned set from store mutations. `ChannelProgramCard` `accessibleLabel()` memoized with `remember(program.id)`.
+- Evidence/checks: `assembleDebug` / unit tests green, installed on device.
+- Next concrete action: home button remap via accessibility service.
+
+## Update - 2026-09-16 (Home button remap)
+
+- Completed: Committed `60238d7` — Removed broken `HomeRemapAccessibilityService` (Android blocks HOME key interception via accessibility services on Google TV). Replaced with Default Launcher card using `DefaultLauncherHelper.requestDefaultLauncherIntent()` — opens system "set as home app" dialog. Added `AccessibilityServicesHelper` to detect if TalkBack is running; when enabled, card shows targeted prompt: "TalkBack is on. Set BlindPilot as default to get Home button priority."
+- Evidence/checks: `assembleDebug` / unit tests green, installed on device.
+- Next concrete action: documentation pass — update README and roadmap.
+
+## Update - 2026-09-16 (App renamed to Balooga)
+
+- Completed: Committed `67fc12d` — Renamed display name from "TV Launcher" to "Balooga". Internal package name and app ID unchanged.
+- Evidence/checks: `assembleDebug` / unit tests green, installed on device.
+- Next concrete action: documentation update.
 
 ## Update - 2026-09-16 (Startup announcement + accessibility audit)
 

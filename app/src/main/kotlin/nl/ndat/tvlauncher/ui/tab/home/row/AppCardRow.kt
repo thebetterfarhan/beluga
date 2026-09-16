@@ -75,11 +75,12 @@ fun AppCardRow(
 							},
 							onMove = { relativePosition ->
 								val destinationApp = apps.getOrNull(index + relativePosition)
-								val newIndex = when {
-									destinationApp?.favoriteOrder != null -> destinationApp.favoriteOrder
-									else -> index + relativePosition.toLong()
+								val movingOrder = app.favoriteOrder
+								val destinationOrder = destinationApp?.favoriteOrder
+								if (destinationApp != null && movingOrder != null && destinationOrder != null) {
+									viewModel.setFavoriteOrder(app, destinationOrder)
+									viewModel.setFavoriteOrder(destinationApp, movingOrder)
 								}
-								viewModel.setFavoriteOrder(app, newIndex)
 							},
 							favoriteFocusModifier = firstActionModifier,
 							onAction = onAction,

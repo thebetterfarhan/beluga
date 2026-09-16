@@ -18,6 +18,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.paneTitle
@@ -207,7 +208,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 				talkBackEnabled -> stringResource(R.string.set_as_default_launcher_summary_talkback_on)
 				else -> setAsDefaultLauncherSummary
 			}
-			val cardContentDesc = "$setAsDefaultLauncher. $cardSummary"
+			val cardContentDesc = "$setAsDefaultLauncher. $defaultLauncherState. $cardSummary"
 			Card(
 				onClick = {
 					debugLauncherLog("default-launcher: isDefault=$isDefaultLauncher talkBack=$talkBackEnabled")
@@ -221,7 +222,7 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 					.onFocusChanged {
 						debugLauncherLog("default-launcher: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
-					.semantics(mergeDescendants = true) {
+					.clearAndSetSemantics {
 						contentDescription = cardContentDesc
 						role = Role.Button
 					},

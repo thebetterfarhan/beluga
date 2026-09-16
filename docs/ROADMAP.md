@@ -90,3 +90,51 @@ Possible work: configurable toolbar, layouts, navigation sounds, themes, and plu
 ## Phase 9 — Version 1.0 — Later
 
 **Goal:** Publish a dependable launcher with an accessible core experience and sustainable maintenance practices.
+
+## Phase 10 — Home button remap — Complete
+
+**Goal:** Make BlindPilot respond to the Home button on Google TV.
+
+**Success criteria**
+
+- User can set BlindPilot as the default launcher from within the app.
+- TalkBack-aware prompt encourages default launcher setup when an accessibility service is active.
+
+**Completed:**
+
+- Default Launcher card in Settings → Accessibility using `DefaultLauncherHelper.requestDefaultLauncherIntent()`.
+- `AccessibilityServicesHelper` detects TalkBack; targeted prompt shown when TalkBack is active.
+- Broken `HomeRemapAccessibilityService` removed (Android blocks HOME key interception via accessibility services on Google TV).
+
+## Phase 11 — Channel editing — Complete
+
+**Goal:** Allow users to reorder the channel rows on the Home screen.
+
+**Success criteria**
+
+- Channels appear in user-defined order on the Home screen.
+- Order persists across launcher restarts.
+- Reordering is accessible via D-pad and TalkBack.
+
+**Completed:**
+
+- `ChannelPreferences` (SharedPreferences-backed store), `ChannelPreferencesViewModel` with `moveLeft`/`moveRight`.
+- `ChannelPreferencesScreen` with LazyColumn and move buttons (TalkBack `Role.Button` semantics).
+- Channel order applied in `HomeTabViewModel` via `orderChannels()` helper.
+- Database migration `2.sqm` adds `Channel.weight` column on schema upgrade.
+- Accessible from Settings → Accessibility → Channel order.
+
+## Phase 12 — Performance optimization — Complete
+
+**Goal:** Reduce redundant computation in hot paths.
+
+**Success criteria**
+
+- No repeated string parsing on every SharedPreferences read.
+- No double-read on store mutations.
+
+**Completed:**
+
+- `HiddenAppsStore` memoizes parsed `Set<String>` — avoids `split()` on every `get()`/`isHidden()`.
+- `hide/unhide/unhideAll` return updated set — eliminates double-read in ViewModels.
+- `ChannelProgramCard.accessibleLabel()` memoized with `remember(program.id)`.
