@@ -1,5 +1,17 @@
 # Accessibility Polish Log
 
+## 2026-09-16 - Manual TalkBack + physical-remote pass
+
+- **Completed:** Full physical-remote + TalkBack pass on `abf9133` (Favorites heading fix).
+- **Continue row:** Appears when last-focused app exists; correct app name + subtitle announced.
+- **Recent row:** Shows up to 4 most-recent apps; "Apps opened recently." subtitle announced.
+- **Favorites heading:** Fixed duplicate heading announcement — `titleRes = null` on AppCardRow so HeadingText() is the sole heading. TalkBack now announces "Favorite apps" once.
+- **D-pad navigation:** Continue → Recent → Favorites → Watch Next/Channels flows in order; no focus traps.
+- **Card popup:** Focus enters popup, Back returns to invoking card.
+- **All core checklist items:** Passed.
+- **Bug found:** Favorites heading announced twice — fixed in `abf9133`.
+- **Result:** All checks Pass.
+
 ## 2026-09-16 - Continue + Recent apps feature committed
 
 - **Completed:** Committed `cf8a328` — Home tab Continue row + Recent apps row feature. 31 files, +1,062/−56 lines.

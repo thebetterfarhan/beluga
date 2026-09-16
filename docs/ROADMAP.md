@@ -12,15 +12,9 @@ Status labels: **Now**, **Next**, **Planned**, **Later**, and **Complete**. Move
 - App launch and return do not lose the user in an unusable focus state.
 - Regressions have focused automated checks where practical.
 
-## Phase 2 — Accessibility foundation — Now
+## Phase 2 — Accessibility foundation — Complete
 
 **Goal:** Establish a dependable D-pad and TalkBack baseline throughout the existing launcher.
-
-**Current progress**
-
-- App-card semantics are merged so the TV card stays focusable while its decorative artwork is silent.
-- Toolbar, tabs, rows, cards, popups, and settings have targeted focus and semantics work.
-- Chromecast build/install and hierarchy checks have completed; manual TalkBack speech validation remains.
 
 **Exit criteria**
 
@@ -37,7 +31,7 @@ Status labels: **Now**, **Next**, **Planned**, **Later**, and **Complete**. Move
 - Focus-restoration choices have documented, tested behavior and safe fallbacks.
 - Complete launcher-state restoration is either implemented or clearly deferred.
 
-## Phase 4 — Accessibility settings — Now
+## Phase 4 — Accessibility settings — Complete
 
 **Goal:** Give users accessible, persistent control of orientation-related behavior.
 
@@ -47,16 +41,9 @@ Status labels: **Now**, **Next**, **Planned**, **Later**, and **Complete**. Move
 - Selected values persist and the default is documented.
 - All offered modes either work as described or are labelled as unavailable/coming soon.
 
-## Phase 5 — Performance and resilience — Now
+## Phase 5 — Performance and resilience — Complete
 
 **Goal:** Keep interaction responsive on supported TV hardware and resilient to live data changes.
-
-**Current progress**
-
-- Stale-refresh guard implemented (`LauncherActivity`, `REFRESH_STALE_MS = 60_000L`); live app changes still covered by `PackageChangeReceiver`.
-- Preview-channel program commits batched into a single transaction (`ChannelRepository`).
-- Chromecast measurement captured: cold-start apps refresh 3,354 ms; return after >60 s 1,470 ms; return within 60 s correctly skips the refresh.
-- Back-transition main-thread jank (~1–2 s `Davey!` frames) scoped as a separate task.
 
 **Success criteria**
 
@@ -64,9 +51,26 @@ Status labels: **Now**, **Next**, **Planned**, **Later**, and **Complete**. Move
 - Refreshes do not steal focus or cause repeated speech.
 - Main-thread work in focus paths is minimized.
 
-## Phase 6 — Blind productivity features — Planned
+**Key work**
+
+- Stale-refresh guard (`REFRESH_STALE_MS = 60_000L`) + `PackageChangeReceiver` for live changes.
+- Preview-channel program commits batched into one transaction.
+- Back-transition jank removed (placement-counter feedback loop eliminated).
+- Baseline-profile architecture added (`:baselineprofile` module, committed `baseline-prof.txt`).
+- Physical-remote + TalkBack pass completed (2026-09-16).
+
+## Phase 6 — Blind productivity features — Now
 
 **Goal:** Add high-value navigation aids based on validated user needs.
+
+**Current progress**
+
+- Continue row and Recent apps row implemented and validated on device.
+
+**Success criteria**
+
+- Recently used apps are surfaced in a way that is accessible and predictable.
+- Accessible search is usable with D-pad and TalkBack.
 
 Possible work: accessible search, recently used apps, hidden-app management, startup summary, and accessibility profiles.
 
