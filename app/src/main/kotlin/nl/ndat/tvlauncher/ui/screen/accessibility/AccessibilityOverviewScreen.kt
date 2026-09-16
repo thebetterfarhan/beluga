@@ -30,6 +30,8 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import nl.ndat.tvlauncher.R
 import nl.ndat.tvlauncher.data.Destinations
+import nl.ndat.tvlauncher.util.AccessibilityServicesHelper
+import nl.ndat.tvlauncher.util.DefaultLauncherHelper
 import nl.ndat.tvlauncher.util.composition.LocalBackStack
 import nl.ndat.tvlauncher.util.modifier.debugLauncherLog
 import org.koin.androidx.compose.koinViewModel
@@ -189,27 +191,50 @@ fun AccessibilityOverviewScreen(modifier: Modifier = Modifier) {
 			}
 		}
 		item {
-			val homeRemapLabel = stringResource(R.string.home_remap)
-			val homeRemapSummary = stringResource(R.string.home_remap_summary)
+			val defaultLauncherHelper = remember(context) { DefaultLauncherHelper(context) }
+			val isDefaultLauncher = remember { defaultLauncherHelper.isDefaultLauncher() }
+			val talkBackEnabled = remember { AccessibilityServicesHelper.isTalkBackEnabled(context) }
+			val setAsDefaultLauncher = stringResource(R.string.set_as_default_launcher)
+			val setAsDefaultLauncherSummary = stringResource(R.string.set_as_default_launcher_summary)
+			val defaultLauncherSummary = stringResource(R.string.default_launcher_active_summary)
+			val defaultLauncherState = if (isDefaultLauncher) {
+				stringResource(R.string.default_launcher_active)
+			} else {
+				stringResource(R.string.default_launcher_not_active)
+			}
+			val cardSummary = when {
+				isDefaultLauncher -> defaultLauncherSummary
+				talkBackEnabled -> stringResource(R.string.set_as_default_launcher_summary_talkback_on)
+				else -> setAsDefaultLauncherSummary
+			}
+			val cardContentDesc = "$setAsDefaultLauncher. $cardSummary"
 			Card(
 				onClick = {
-					debugLauncherLog("home-remap: opening accessibility settings")
-					context.startActivity(Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS))
+					debugLauncherLog("default-launcher: isDefault=$isDefaultLauncher talkBack=$talkBackEnabled")
+					val intent = defaultLauncherHelper.requestDefaultLauncherIntent()
+					if (intent != null) {
+						context.startActivity(intent)
+					}
 				},
 				modifier = Modifier
 					.fillMaxWidth()
 					.onFocusChanged {
-						debugLauncherLog("home-remap: focused=${it.isFocused} hasFocus=${it.hasFocus}")
+						debugLauncherLog("default-launcher: focused=${it.isFocused} hasFocus=${it.hasFocus}")
 					}
 					.semantics(mergeDescendants = true) {
-						contentDescription = "$homeRemapLabel. $homeRemapSummary"
+						contentDescription = cardContentDesc
 						role = Role.Button
 					},
 			) {
 				Column(modifier = Modifier.padding(20.dp)) {
-					Text(text = homeRemapLabel, style = MaterialTheme.typography.titleMedium)
+					Text(text = setAsDefaultLauncher, style = MaterialTheme.typography.titleMedium)
 					Text(
-						text = homeRemapSummary,
+						text = defaultLauncherState,
+						style = MaterialTheme.typography.bodyMedium,
+						modifier = Modifier.padding(top = 4.dp),
+					)
+					Text(
+						text = cardSummary,
 						style = MaterialTheme.typography.bodyMedium,
 						modifier = Modifier.padding(top = 4.dp),
 					)
