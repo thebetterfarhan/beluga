@@ -13,8 +13,8 @@ build/
 
 java_*.hprof
 
-util/
-trace-temp/
+/util/
+/trace-temp/
 accessibility/TEST_CHECKLIST.md
 accessibility/CollectChromecastBackEvidence.cmd
 accessibility/CollectChromecastBackEvidence.ps1

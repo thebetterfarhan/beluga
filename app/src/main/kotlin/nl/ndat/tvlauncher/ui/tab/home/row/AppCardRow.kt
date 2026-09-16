@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import nl.ndat.tvlauncher.R
@@ -21,20 +22,28 @@ import org.koin.androidx.compose.koinViewModel
 fun AppCardRow(
 	apps: List<App>,
 	modifier: Modifier = Modifier,
+	titleRes: Int? = R.string.favorite_apps,
+	subtitleRes: Int? = null,
+	startupFocusTarget: StartupFocusTarget? = null,
 ) {
 	val viewModel = koinViewModel<HomeTabViewModel>()
 	val startupFocus = LocalStartupFocus
+	val effectiveTarget = startupFocusTarget ?: StartupFocusTarget.FAVORITE
 	val preferredIndex = startupFocus
-		?.takeIf { it.target == StartupFocusTarget.FAVORITE && it.itemId != null }
+		?.takeIf { it.target == effectiveTarget && it.itemId != null }
 		?.itemId
 		?.let { savedId -> apps.indexOfFirst { app -> app.id == savedId }.takeIf { index -> index >= 0 } }
-		?: viewModel.preferredFavoriteIndex(apps)
+		?: if (effectiveTarget == StartupFocusTarget.FAVORITE) viewModel.preferredFavoriteIndex(apps) else 0
+
+	val cardRowTitle = titleRes?.let { stringResource(it) }
+	val cardRowSubtitle = subtitleRes?.let { stringResource(it) }
 
 	CardRow(
 		modifier = modifier,
-		title = stringResource(R.string.favorite_apps),
+		title = cardRowTitle,
+		subtitle = cardRowSubtitle,
 		firstItemFocusRequester = startupFocus
-			?.takeIf { it.target == StartupFocusTarget.FAVORITE }
+			?.takeIf { it.target == effectiveTarget }
 			?.requester,
 	) { childFocusRequester ->
 		itemsIndexed(
@@ -47,13 +56,16 @@ fun AppCardRow(
 			) {
 				AppCard(
 					app = app,
-					onFocused = { viewModel.rememberFocusedApp(app.id) },
+					onFocused = {
+						viewModel.rememberFocusedApp(app.id)
+						viewModel.recordOpenedApp(app.id)
+					},
 					modifier = Modifier
 						.ifElse(
 							condition = index == preferredIndex,
 							positiveModifier = Modifier.focusRequester(childFocusRequester)
 						),
-popupContent = { firstActionModifier, onAction ->
+					popupContent = { firstActionModifier, onAction ->
 						AppPopup(
 							isFirst = index == 0,
 							isLast = index == apps.size - 1,
@@ -78,11 +90,8 @@ popupContent = { firstActionModifier, onAction ->
 		}
 	}
 
-	// The old launcher requested focus on the non-focusable content host. Wait
-	// until the first real card is composed, then claim focus exactly once for
-	// this launcher start. Subsequent list refreshes must not interrupt the user.
 	LaunchedEffect(apps.isNotEmpty(), startupFocus?.pending, startupFocus?.target) {
-		if (apps.isNotEmpty() && startupFocus?.pending == true && startupFocus.target == StartupFocusTarget.FAVORITE) {
+		if (apps.isNotEmpty() && startupFocus?.pending == true && startupFocus.target == effectiveTarget) {
 			startupFocus.requester.requestFocus()
 			startupFocus.onFocused()
 		}
