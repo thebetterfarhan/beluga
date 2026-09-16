@@ -39,7 +39,6 @@ Add high-value navigation aids based on validated user needs. The Continue row a
 
 ## Open validation
 
-- [ ] Hidden-app management (Phase 6 backlog item).
 - [ ] Startup summary (Phase 6 backlog item).
 
 ## Current blockers and risks
@@ -56,6 +55,7 @@ Add high-value navigation aids based on validated user needs. The Continue row a
 - [x] D-pad navigation through all rows without traps.
 - [x] Physical-remote + TalkBack pass completed with all items passing.
 - [x] Search bar: TalkBack announces "Search apps" on focus; typing filters the grid; clear button works; D-pad DOWN moves to first result; empty state announced.
+- [x] Hidden apps: long-press app in All Apps → Hide button; hidden apps filtered from grid and search; Settings → Accessibility → Hidden apps shows hidden list; tap to unhide; persistence across launcher restarts.
 
 ## Next concrete action
 
@@ -89,3 +89,9 @@ Advance Phase 5 → Phase 6 in ROADMAP and begin planning accessible search or o
 - Card popup: focus enters popup, Back returns to invoking card.
 - Phase 5 marked Complete in ROADMAP; Phase 6 "Blind productivity features" marked Now.
 - Next concrete action: begin Phase 6 backlog — accessible search or other items from `docs/BACKLOG.md`.
+
+## Update - 2026-09-16 (Hidden apps feature — Phase 6 complete)
+
+- Completed: Committed `3154116` — Hidden apps management feature. `HiddenAppsStore` (SharedPreferences `Set<String>`), hide button on app popup (`Icons.Default.Close`), hidden apps filtered from grid and search, `HiddenAppsScreen` with accessible unhide list in Settings → Accessibility, `HiddenAppsViewModel` with `unhide` and `unhideAll`, full navigation wiring + state persistence.
+- Evidence/checks: `assembleDebug` / unit tests green, installed on device, physical TalkBack pass: hide button announced, app disappears from grid and search, Hidden Apps screen accessible, unhide restores app, persistence across restarts.
+- Next concrete action: Phase 6 remaining backlog item — startup summary.
