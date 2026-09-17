@@ -13,6 +13,11 @@ build/
 
 java_*.hprof
 
+# Keystore for release signing — NEVER commit
+*.keystore
+keystore.properties
+local.properties
+
 /util/
 /trace-temp/
 accessibility/TEST_CHECKLIST.md

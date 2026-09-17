@@ -1,9 +1,20 @@
+import java.util.Properties
+
 plugins {
 	alias(libs.plugins.android.app)
 	alias(libs.plugins.kotlin.compose)
 	alias(libs.plugins.sqldelight)
 	alias(libs.plugins.kotlin.serialization)
 	alias(libs.plugins.androidx.baselineprofile)
+}
+
+// Release signing secrets live in local.properties (git-ignored).
+// Keys: beluga.storeFile, beluga.storePassword, beluga.keyAlias, beluga.keyPassword
+val keystoreProperties = Properties().apply {
+	val localProps = rootProject.file("local.properties")
+	if (localProps.exists()) {
+		localProps.inputStream().use { load(it) }
+	}
 }
 
 kotlin {
@@ -36,6 +47,18 @@ android {
 			matchingFallbacks += listOf("release")
 		}
 	}
+
+	// Configure release signing from local.properties (git-ignored).
+	// Without those properties the release build stays unsigned.
+	signingConfigs {
+		create("release") {
+			storeFile = keystoreProperties.getProperty("beluga.storeFile")?.let(rootProject::file)
+			storePassword = keystoreProperties.getProperty("beluga.storePassword")
+			keyAlias = keystoreProperties.getProperty("beluga.keyAlias")
+			keyPassword = keystoreProperties.getProperty("beluga.keyPassword")
+		}
+	}
+	buildTypes.getByName("release").signingConfig = signingConfigs.getByName("release")
 }
 
 baselineProfile {
